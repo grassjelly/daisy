@@ -2,7 +2,8 @@
 
 set -e
 
-PACKAGE_PATH=${ROS2_WS_MOUNT}/$1
+PATH_ARG=$(echo "$1" | sed 's:/*$::')
+PACKAGE_PATH=${ROS2_WS_MOUNT}/$PATH_ARG
 PACKAGE_NAME=$(basename $PACKAGE_PATH)
 PACKAGE_DOCKER_PATH=$PACKAGE_PATH/docker
 
@@ -13,9 +14,20 @@ if [ ! -d $PACKAGE_PATH ]; then
     exit
 fi
 
-cp -r $DAISY_PATH/docker $PACKAGE_PATH
+if [ -d $PACKAGE_PATH/docker ]; then
+    echo "Package directory contains docker."
+    echo "Exiting now!"
+    exit
+fi
+
+mkdir -p $PACKAGE_PATH/docker
+cp -r $DAISY_PATH/docker-template/. $PACKAGE_PATH/docker
 sed -i "s/rosdistro/$USE_ROS_DISTRO/" $PACKAGE_DOCKER_PATH/.env
 sed -i "s/packagename/$PACKAGE_NAME/" $PACKAGE_DOCKER_PATH/.env
 
 echo "Docker template created in: "
 echo "$PACKAGE_DOCKER_PATH"
+echo ""
+echo "run: docker compose build"
+echo ""
+echo "in that directory to build your package's Docker image."
