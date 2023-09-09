@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [-z "$0" ]; then
+    echo "No command was provided. You can pass a command to daisy-exec to run inside the container."
+    echo "$ daisy-exec ros2 topic list"
+    exit
+fi
+
+if [ "$(docker ps -a --quiet --filter status=exited --filter name=${ROS2_WS_CONTAINER_NAME}-exec)" ]; then
+    docker rm ${ROS2_WS_CONTAINER_NAME}-exec > /dev/null
+fi
+
+cd $DAISY_PATH
+export COMMAND=$@
+. $DAISY_PATH/.env
+docker compose up exec

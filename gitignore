@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+cp $DAISY_PATH/.gitignore $ROS2_WS_MOUNT
+rm -rf $DAISY_PATH/.git
+echo ".gitignore added to $ROS2_WS_MOUNT. You're ready to git init your workspace."

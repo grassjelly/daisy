@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+
+export COMMAND=" " #just to refrain daisy compose from complaining that COMMAND env variable at 'exec'' service is empty.
+cd $DAISY_PATH
+
+if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
+    if [ "$(docker ps -a --quiet --filter status=exited --filter name=$ROS2_WS_CONTAINER_NAME)" ]; then
+        docker rm $ROS2_WS_CONTAINER_NAME > /dev/null
+    fi
+    docker compose up shell -d
+fi
+
+export COMMAND=" " #just to refrain daisy compose from complaining that COMMAND env variable at 'exec'' service is empty.
+. $DAISY_PATH/.env
+docker compose exec shell /bin/bash

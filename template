@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+
+PACKAGE_PATH=${ROS2_WS_MOUNT}/$1
+PACKAGE_NAME=$(basename $PACKAGE_PATH)
+PACKAGE_DOCKER_PATH=$PACKAGE_PATH/docker
+
+if [ ! -d $PACKAGE_PATH ]; then
+    echo "Package directory does not exist."
+    echo "Path should be relative to your ROS2 workspace directory"
+    echo "Exiting now!"
+    exit
+fi
+
+cp -r $DAISY_PATH/docker $PACKAGE_PATH
+sed -i "s/rosdistro/$USE_ROS_DISTRO/" $PACKAGE_DOCKER_PATH/.env
+sed -i "s/packagename/$PACKAGE_NAME/" $PACKAGE_DOCKER_PATH/.env
+
+echo "Docker template created in: "
+echo "$PACKAGE_DOCKER_PATH"

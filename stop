@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ "$(docker ps -a --quiet --filter status=running --filter name=$ROS2_WS_CONTAINER_NAME)" ]; then
+    echo "Exiting ..."
+    docker stop $ROS2_WS_CONTAINER_NAME
+fi

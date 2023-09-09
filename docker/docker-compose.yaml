@@ -1,0 +1,36 @@
+version: "3.9"
+services:   
+  base:
+    image: ${PACKAGE_NAME}-${USE_ROS_DISTRO}
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      args:
+        USE_ROS_DISTRO: ${USE_ROS_DISTRO}
+        WORKSPACE_NAME: ${ROS2_WS_CONTAINER_NAME}
+      target: base
+
+  layer:
+    hostname: ${USE_ROS_DISTRO}-container
+    image: ${PACKAGE_NAME}-${USE_ROS_DISTRO}
+    stdin_open: true
+    tty: true
+    network_mode: host
+    ipc: host
+    privileged: true
+    environment:
+      - DISPLAY=${DISPLAY} 
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority
+
+  test:
+    container_name: test-container-name
+    extends: layer
+    command: colcon build
+
+  my-service:
+    container_name: my_service-container-name
+    extends: layer
+    command: ros2 run <my_package> <my_node>
