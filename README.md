@@ -14,6 +14,7 @@ If you want to quickly test a ROS2 package without system installing ROS2, or si
 | `daisy-template`  |src/my_package                | Add docker template ROS2 package.                       |
 
 ### 1. Installation
+
 #### 1.1 Install Docker
 ```
 curl https://get.docker.com | sh && sudo systemctl --now enable docker
@@ -41,41 +42,38 @@ daisy-build <distro>
 
 `daisy-build` will automatically find the dependencies of all the the ROS2 packages inside `src` directory of your workspace. **Take note that running this will stop all daisy spawned containers.**
 
-Now you're ready to use the container.
+You'll only need to run this command once or when you have made changes on on the dependencies (package.xml). You can modify the Dockerfile as you wish to add custom installation commands just remember to run `daisy-build` again when you're done.
 
 ### 2. Usage
+To use daisy, source the setup.bash file:
+```
+cd $HOME/ros2_ws
+source daisy/setup.bash
+```
 
 #### 2.1 Running a comand from the host machine to the Docker container
 
 For instance building the workspace:
 ```
-cd $HOME/my_ros2_ws
-source daisy/setup.bash
 daisy-exec colcon build
 ```
 or checking out topics available:
 ```
-cd $HOME/my_ros2_ws
-source daisy/setup.bash
 daisy-exec ros2 topic list
 ```
 
 #### 2.2 Shell mode
 This mode allows you to run commands within the docker container itself like you're using it natively in your host machine:
 ```
-cd $HOME/my_ros2_ws
-source daisy/setup.bash
-daisy-shell
+user@host-machine:~/ros2_ws$ daisy-shell
 ```
 Once inside the container, you can start using ROS2 commands. For instance:
 ```
-ros2 launch my_package my_launch_file.launch.py
+root@humble-container:~/ros2_ws$  ros2 launch my_package my_launch_file.launch.py
 ```
 #### 2.3 Stopping the container
 Once you're done using the container, you can stop it by running:
 ```
-cd $HOME/my_ros2_ws
-source daisy/setup.bash
 daisy-stop
 ```
 
@@ -86,8 +84,6 @@ If you're using git within the workspace, you can use `daisy-gitignore` to add a
 
 Run:
 ```
-cd $HOME/my_ros2_ws
-source daisy/setup.bash
 daisy-gitignore
 ```
 
@@ -95,8 +91,6 @@ daisy-gitignore
 If you want to Dockerize a specific package, you can use `daisy-template` to create an auto-generated docker directory in your ROS2 package's root directory that contains all the files to create a Docker image and compose services.
 
 ```
-cd $HOME/my_ros2_ws
-source daisy/setup.bash
 daisy-template src/<my_package>
 ```
 - `my_package` is the ROS2 package where you want to deploy the Docker template.
@@ -109,7 +103,6 @@ docker compose build
 
 Once done, you can check if it works by running the `test` service to build the workspace:
 ```
-cd $HOME/my_ros2_ws/src/my_package/docker
 docker compose up test
 ```
 
