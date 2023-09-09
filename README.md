@@ -11,7 +11,7 @@ If you want to quickly test a ROS2 package without system installing ROS2, or si
 | `daisy-shell`     |                              | Enter and run commands inside the Docker container.     |     
 | `daisy-stop`      |                              | Stop all containers.                                    |
 | `daisy-gitignore` |                              | Add _build_ _install_ _log_ to .gitignore of workspace. |
-| `daisy-template`  |src/my_package                | Add docker template ROS2 package.                       |
+| `daisy-template`  |src/my_package                | Add docker template to ROS2 package.                    |
 
 ### 1. Installation
 
