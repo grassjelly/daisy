@@ -92,7 +92,7 @@ daisy-gitignore
 ```
 
 #### 3.2 Standalone Docker image
-If you want to dockerize a specific package, you can use `daisy-template` to create an auto-generate a docker directory in your ROS2 package's root directory that contains all the files to create a Docker image and compose services.
+If you want to Dockerize a specific package, you can use `daisy-template` to create an auto-generated docker directory in your ROS2 package's root directory that contains all the files to create a Docker image and compose services.
 
 ```
 cd $HOME/my_ros2_ws
