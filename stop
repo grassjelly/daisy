@@ -2,7 +2,7 @@
 
 set -e
 
-if [ "$(docker ps -a --quiet --filter status=running --filter name=$ROS2_WS_CONTAINER_NAME)" ]; then
-    echo "Exiting ..."
-    docker stop $ROS2_WS_CONTAINER_NAME
-fi
+cd $DAISY_PATH
+export COMMAND=$@
+. $DAISY_PATH/.env
+docker compose stop

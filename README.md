@@ -16,7 +16,7 @@ sudo usermod -aG docker $USER && newgrp docker
 If you're running with a Nvidia GPU, install [Nvidia Runtime](https://github.com/NVIDIA/nvidia-container-runtime#installation) and [reconfigure](https://github.com/NVIDIA/nvidia-container-runtime#daemon-configuration-file) the deafult runtime.
 
 #### 1.2 Download daisy
-Clone daisy in your ROS2 workspace (eg. $HOME/my_ros2_ws):
+Clone daisy into your ROS2 workspace (eg. $HOME/my_ros2_ws):
 ```
 cd $HOME/my_ros2_ws
 git clone https://github.com/grassjelly/daisy.git
@@ -30,7 +30,7 @@ daisy-build <distro>
 ```
 - **distro** can be `foxy`, `galactic`, `humble`, or `iron`
 
-`daisy-build` will automatically find the dependencies of all the the ROS2 packages inside `src` directory of your workspace.
+`daisy-build` will automatically find the dependencies of all the the ROS2 packages inside `src` directory of your workspace. **Take note that running this will stop all daisy spawned containers.**
 
 Now you're ready to use the container.
 
@@ -44,6 +44,13 @@ cd $HOME/my_ros2_ws
 source daisy/setup.bash
 daisy-exec colcon build
 ```
+or checking out topics available:
+```
+cd $HOME/my_ros2_ws
+source daisy/setup.bash
+daisy-exec ros2 topic list
+```
+
 #### 2.2 Shell mode
 This mode allows you to run commands within the docker container itself like you're using it natively in your host machine:
 ```
@@ -62,7 +69,7 @@ cd $HOME/my_ros2_ws
 source daisy/setup.bash
 daisy-stop
 ```
-- Only applies when you used `daisy-shell`.
+
 ### 3. Packaging
 
 #### 3.1 Using git
