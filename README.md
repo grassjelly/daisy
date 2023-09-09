@@ -53,9 +53,9 @@ For instance building the workspace:
 ```
 daisy-exec colcon build
 ```
-or checking out topics available:
+or running RVIZ:
 ```
-daisy-exec ros2 topic list
+daisy-exec rviz2
 ```
 
 #### 2.2 Shell mode
