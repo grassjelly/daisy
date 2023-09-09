@@ -31,11 +31,13 @@ Clone daisy into your ROS2 workspace (eg. $HOME/my_ros2_ws):
 cd $HOME/my_ros2_ws
 git clone https://github.com/grassjelly/daisy.git
 ```
-
+To use daisy, source the setup.bash file:
+```
+cd $HOME/ros2_ws
+source daisy/setup.bash
+```
 #### 1.3 Build the Docker image:
 ```
-cd $HOME/my_ros2_ws
-source daisy/setup.bash
 daisy-build <distro>
 ```
 - **distro** can be `foxy`, `galactic`, `humble`, or `iron`
@@ -45,12 +47,6 @@ daisy-build <distro>
 You'll only need to run this command once or when you have made changes on on the dependencies (package.xml). You can modify the Dockerfile as you wish to add custom installation commands just remember to run `daisy-build` again when you're done.
 
 ### 2. Usage
-To use daisy, source the setup.bash file:
-```
-cd $HOME/ros2_ws
-source daisy/setup.bash
-```
-
 #### 2.1 Running a comand from the host machine to the Docker container
 
 For instance building the workspace:
