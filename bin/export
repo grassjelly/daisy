@@ -22,4 +22,4 @@ vcs export $ROS2_WS_MOUNT/src > install.repos
 
 cd $DAISY_PATH
 ./bin/gitignore
-echo "src" >> $ROS2_WS_MOUNT
+echo "src" >> $ROS2_WS_MOUNT/.gitignore
