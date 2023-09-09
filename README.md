@@ -70,7 +70,7 @@ source daisy/setup.bash
 daisy-stop
 ```
 
-### 3. Packaging
+### 3. Dockerizing the workspace or a specific package
 
 #### 3.1 Using git
 If you're using git within the workspace, you can use `daisy-gitignore` to add a .gitignore file in your ROS2 workspace to prevent commiting `build` `install` and `log` directories.
