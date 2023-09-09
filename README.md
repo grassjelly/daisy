@@ -4,14 +4,14 @@ A tool to easily run a Docker container inside a ROS2 workspace.
 
 If you want to quickly test a ROS2 package without system installing ROS2, or simply want to test whether your package builds on another distro, this tool is for you.
 
-| COMMAND           | ARGUMENTS                   | DESCRIPTION                                       |
-|-------------------|-----------------------------|---------------------------------------------------|
-| `daisy-build`     |  <foxy,galactic,humble,iron>| Build the wookspace's Docker image                |
-| `daisy-exec`      | <bash_command>              | Run a bash command inside the container.          |
-| `daisy-shell`     |                             | Enter the Docker container.                       |
-| `daisy-stop`      |                             | Stop all containers.                              |
+| COMMAND           | ARGUMENTS                   | DESCRIPTION                                             |
+|-------------------|-----------------------------|---------------------------------------------------------|
+| `daisy-build`     |  <foxy,galactic,humble,iron>| Build the workspace's Docker image.                     |
+| `daisy-exec`      | <bash_command>              | Run a bash command inside the container from host.      |
+| `daisy-shell`     |                             | Enter and run commands inside the Docker container.     |     
+| `daisy-stop`      |                             | Stop all containers.                                    |
 | `daisy-gitignore` |                             | Add _build_ _install_ _log_ to .gitignore of workspace. |
-| `daisy-template`  | <package_path>              | Add docker template ROS2 package.                 |
+| `daisy-template`  | <package_path>              | Add docker template ROS2 package.                       |
 
 ### 1. Installation
 #### 1.1 Install Docker
