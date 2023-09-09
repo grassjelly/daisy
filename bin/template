@@ -11,13 +11,13 @@ if [ ! -d $PACKAGE_PATH ]; then
     echo "Package directory does not exist."
     echo "Path should be relative to your ROS2 workspace directory"
     echo "Exiting now!"
-    exit
+    exit 1
 fi
 
 if [ -d $PACKAGE_PATH/docker ]; then
     echo "Package directory contains docker."
     echo "Exiting now!"
-    exit
+    exit 1
 fi
 
 mkdir -p $PACKAGE_PATH/docker

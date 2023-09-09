@@ -5,7 +5,7 @@ set -e
 if [-z "$0" ]; then
     echo "No command was provided. You can pass a command to daisy-exec to run inside the container."
     echo "$ daisy-exec ros2 topic list"
-    exit
+    exit 1
 fi
 
 REMOTE_DISPLAY=${DISPLAY%:*}

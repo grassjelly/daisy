@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ -z $(vcs -h) ]]; then
+    echo "Installing VCS Tool for exporting dependencies."
+    curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
+    sudo apt update -y
+    sudo apt install -y python3-vcstool
+fi
+
+if [ ! -d $ROS2_WS_MOUNT/src ]; then
+    echo "$ROS2_WS_MOUNT/src does not exit. Exiting now!"
+fi
+
+if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
+   echo "$ROS2_WS_MOUNT/src is empty. Download all the repositorie before running daisy-build."
+   exit 1
+fi
+
+vcs export $ROS2_WS_MOUNT/src > install.repos
+
+cd $DAISY_PATH
+./bin/gitignore
+echo "src" >> $ROS2_WS_MOUNT
