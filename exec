@@ -8,10 +8,6 @@ if [-z "$0" ]; then
     exit
 fi
 
-if [ "$(docker ps -a --quiet --filter status=exited --filter name=${ROS2_WS_CONTAINER_NAME}-exec)" ]; then
-    docker rm ${ROS2_WS_CONTAINER_NAME}-exec > /dev/null
-fi
-
 REMOTE_DISPLAY=${DISPLAY%:*}
 if [ -z $REMOTE_DISPLAY ]; then
     xhost +
