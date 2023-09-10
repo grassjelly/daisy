@@ -33,7 +33,7 @@ git clone https://github.com/grassjelly/daisy.git
 ```
 To use daisy, source the setup.bash file:
 ```
-cd $HOME/ros2_ws
+cd $HOME/my_ros2_ws
 source daisy/setup.bash
 ```
 #### 1.3 Build the Docker image:
@@ -61,11 +61,11 @@ daisy-exec rviz2
 #### 2.2 Shell mode
 This mode allows you to run commands within the docker container itself like you're using it natively in your host machine:
 ```
-user@host-machine:~/ros2_ws$ daisy-shell
+user@host-machine:~/my_ros2_ws$ daisy-shell
 ```
 Once inside the container, you can start using ROS2 commands. For instance:
 ```
-root@humble-container:~/ros2_ws$  ros2 launch my_package my_launch_file.launch.py
+root@humble-container:~/my_ros2_ws$  ros2 launch my_package my_launch_file.launch.py
 ```
 #### 2.3 Stopping the container
 Once you're done using the container, you can stop it by running:
