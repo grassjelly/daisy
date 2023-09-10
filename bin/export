@@ -19,7 +19,12 @@ if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
 fi
 
 vcs export $ROS2_WS_MOUNT/src > install.repos
+echo "Export done! Local repositories saved in: "
+echo "$ROS2_WS_MOUNT/install.repos"
+echo ""
 
 cd $DAISY_PATH
 ./bin/gitignore
 echo "src" >> $ROS2_WS_MOUNT/.gitignore
+echo "You can now use git in your workspace (eg. git init)"
+echo ""
