@@ -2,7 +2,7 @@
 (docker lazy)
 A tool to easily Dockerize ROS2 workspaces and packages. 
 
-In a nutshell, daisy contains a built-in [`Dockerfile`](./Dockerfile) and [`docker-compose.compose`](./docker-compose.yaml) files to quickly spin a Docker container for the ROS2 workspace you're working on. It's a thin layer to conveniently call [Docker Compose](https://docs.docker.com/compose/) commands with a few helper scripts.
+In a nutshell, daisy contains a built-in [`Dockerfile`](./Dockerfile) and [`docker-compose.yaml`](./docker-compose.yaml) files to quickly spin a Docker container for the ROS2 workspace you're working on. It's a thin layer to conveniently call [Docker Compose](https://docs.docker.com/compose/) commands with a few helper scripts.
 
 Daisy aims to make ROS2 development workspaces become more reproducible without the huge bulk of git commiting all the source codes found in the workspace using [vcstool](https://github.com/dirk-thomas/vcstool#export-set-of-repositories).
 
