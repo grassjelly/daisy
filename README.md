@@ -13,6 +13,7 @@ If you want to quickly test a ROS2 package without system installing ROS2, or si
 | `daisy-stop`      |                              | Stop all containers.                                    |
 | `daisy-gitignore` |                              | Add _build_ _install_ _log_ to .gitignore of workspace. |
 | `daisy-template`  |src/my_package                | Add docker template to ROS2 package.                    |
+| `daisy-export`    |                              | Record all local repositories found in src              |
 
 ### 1. Installation
 
@@ -85,7 +86,7 @@ daisy-gitignore
 ```
 
 #### 3.2 Dockerizing ROS2 workspaces (without src in git)
-This is a wrapper to [vcs-tool](https://github.com/dirk-thomas/vcstool#export-set-of-repositories) `export` command. If you're Dockerizing the ROS2 workspace and pushing it in a git repository without the source codes in src, use `daisy-export` to record all the local repositories found in your src directory. `daisy-build` will automatically download all the repositories if an install.repos is found on the workspace.
+This is a wrapper to [vcs-tool](https://github.com/dirk-thomas/vcstool#export-set-of-repositories) `export` command. If you're Dockerizing your ROS2 workspace and pushing it in a git repository without the source codes in src, use `daisy-export` to record all the local repositories found in your src directory. `daisy-build` will automatically download all the repositories if an install.repos is found on the workspace.
 
 Run:
 ```
