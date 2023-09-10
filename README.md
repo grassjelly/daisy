@@ -15,11 +15,11 @@ A huge thanks to Sebastian Castro for this [blog post](https://roboticseabass.co
 | `daisy-build`     |<foxy, galactic, humble, iron>| Build the workspace's Docker image.                     |
 | `daisy-exec`      |<bash_command>                | Run a bash command inside the container from host.      |
 | `daisy-shell`     |                              | Enter and run commands inside the Docker container.     |     
-| `daisy-up`        |<compose_services>            | Run compose services                                    |     
+| `daisy-up`        |<compose_services>            | Run compose services.                                   |     
 | `daisy-stop`      |                              | Stop all containers.                                    |
 | `daisy-gitignore` |                              | Add _build_ _install_ _log_ to .gitignore of workspace. |
 | `daisy-template`  |src/my_package                | Add docker template to ROS2 package.                    |
-| `daisy-export`    |                              | Record all local repositories found in src              |
+| `daisy-export`    |                              | Record all local repositories found in src.             |
 
 ### 1. Installation
 
