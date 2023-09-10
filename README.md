@@ -2,6 +2,10 @@
 (docker lazy)
 A tool to easily Dockerize ROS2 workspaces and packages. 
 
+In a nutshell, daisy contains a built-in [`Dockerfile`](./Dockerfile) and [`docker-compose.compose`](./docker-compose.yaml) files to quickly spin a Docker container for the ROS2 workspace you're working on. It's thin layer to conveniently call docker compose commands with a few helper scripts.
+
+Daisy aims to make ROS2 workspaces more reproducible without the huge bulk of git commiting all the source codes found in the workspace using [vcstool](https://github.com/dirk-thomas/vcstool#export-set-of-repositories).
+
 If you want to quickly test a ROS2 package without system installing ROS2, or simply want to test whether your package builds on another distro, this tool is for you.
 
 
@@ -10,6 +14,7 @@ If you want to quickly test a ROS2 package without system installing ROS2, or si
 | `daisy-build`     |<foxy, galactic, humble, iron>| Build the workspace's Docker image.                     |
 | `daisy-exec`      |<bash_command>                | Run a bash command inside the container from host.      |
 | `daisy-shell`     |                              | Enter and run commands inside the Docker container.     |     
+| `daisy-up`        |<compose_services>            | Run compose services                                    |     
 | `daisy-stop`      |                              | Stop all containers.                                    |
 | `daisy-gitignore` |                              | Add _build_ _install_ _log_ to .gitignore of workspace. |
 | `daisy-template`  |src/my_package                | Add docker template to ROS2 package.                    |
@@ -69,7 +74,17 @@ Once inside the container, you can start using ROS2 commands. For instance:
 ```
 root@humble-container:~/my_ros2_ws$  ros2 launch my_package my_launch_file.launch.py
 ```
-#### 2.3 Stopping the container
+#### 2.3 Running compose services
+Add your custom services in the docker-compose.yaml and run it with `daisy-up`.
+```
+daisy-up my_service1 my_service2
+```
+There's built-in service to launch `rviz2` and `colcon build`, for example:
+```
+daisy-up rviz
+```
+
+#### 2.4 Stopping the container
 Once you're done using the container, you can stop it by running:
 ```
 daisy-stop
