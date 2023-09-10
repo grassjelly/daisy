@@ -75,7 +75,7 @@ if [ ! -z $1  ]; then
 fi
 
 cd $DAISY_PATH
-echo "Stopping al running containers."
+echo "Stopping all running containers."
 ./bin/stop
 export COMMAND=$@
 . $DAISY_PATH/.env
