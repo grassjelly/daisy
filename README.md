@@ -44,6 +44,8 @@ To use daisy, source the setup.bash file:
 cd $HOME/my_ros2_ws
 source daisy/setup.bash
 ```
+- Once sourced, you can use daisy in any directory.
+
 #### 1.3 Build the Docker image:
 ```
 daisy-build <distro>
