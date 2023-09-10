@@ -1,8 +1,9 @@
 ## daisy 
 (docker lazy)
-A tool to easily run a Docker container inside a ROS2 workspace. 
+A tool to easily Dockerize ROS2 workspaces and packages. 
 
 If you want to quickly test a ROS2 package without system installing ROS2, or simply want to test whether your package builds on another distro, this tool is for you.
+
 
 | COMMAND           | ARGUMENTS                    | DESCRIPTION                                             |
 |-------------------|------------------------------|---------------------------------------------------------|
@@ -73,18 +74,26 @@ Once you're done using the container, you can stop it by running:
 daisy-stop
 ```
 
-### 3. Dockerizing the workspace or a specific package
+### 3. Dockerizing ROS2 workspaces and ROS2 packages
 
-#### 3.1 Using git
-If you're using git within the workspace, you can use `daisy-gitignore` to add a .gitignore file in your ROS2 workspace to prevent commiting `build` `install` and `log` directories.
+#### 3.1 Dockerizing ROS2 workspaces (with src in git)
+If you're Dockerizing your ROS2 workspace and pushing it in a git repository with the source codes in src,  use `daisy-gitignore` to add a .gitignore file in your ROS2 workspace to prevent commiting _build_ _install_ and _log_ directories.
 
 Run:
 ```
 daisy-gitignore
 ```
 
-#### 3.2 Standalone Docker image
-If you want to Dockerize a specific package, you can use `daisy-template` to create an auto-generated docker directory in your ROS2 package's root directory that contains all the files to create a Docker image and compose services.
+#### 3.2 Dockerizing ROS2 workspaces (without src in git)
+This is a wrapper to [vcs-tool](https://github.com/dirk-thomas/vcstool#export-set-of-repositories) `export` command. If you're Dockerizing the ROS2 workspace and pushing it in a git repository without the source codes in src, use `daisy-export` to record all the local repositories found in your src directory. `daisy-build` will automatically download all the repositories if an install.repos is found on the workspace.
+
+Run:
+```
+daisy-export
+```
+
+#### 3.3 Dockerizing ROS2 Packages
+`daisy-template` auto-generates a docker directory that contains all the files to create a Docker image and compose services.
 
 ```
 daisy-template src/<my_package>
