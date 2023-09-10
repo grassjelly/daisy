@@ -26,5 +26,4 @@ echo ""
 cd $DAISY_PATH
 ./bin/gitignore
 echo "src" >> $ROS2_WS_MOUNT/.gitignore
-echo "You can now use git in your workspace (eg. git init)"
-echo ""
+
