@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+. $DAISY_PATH/.env
+
+if [[ -z $1 && -z $USE_ROS_DISTRO ]]; then
+    echo "No ROS2 distro provided. Exiting now!"
+    echo "usage: daisy-build [foxy, galactic, humble, iron]"
+    exit 1
+fi
+
+SUPPORTED_DISTRO=( foxy galactic humble iron  )
+if [[ ! " ${SUPPORTED_DISTRO[*]} " =~ " $1 " && -z $USE_ROS_DISTRO ]]; then
+    echo "Unsupported $1 distro. Exiting now!"
+    exit 1
+fi
+
+if [ ! -d "$ROS2_WS_MOUNT/src" ]; then
+    mkdir $ROS2_WS_MOUNT/src
+fi
+
+if [ -f "$ROS2_WS_MOUNT/install.repos" ]; then
+    if [[ -z $(vcs -h) ]]; then
+        echo "Installing VCS Tool for exporting dependencies."
+        curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
+        sudo apt update -y
+        sudo apt install -y python3-vcstool
+    fi
+    vcs import $ROS2_WS_MOUNT/src --skip-existing --input $ROS2_WS_MOUNT/install.repos --recursive
+fi
+
+if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
+   echo "$ROS2_WS_MOUNT/src is empty. Download all the repositorie before running daisy-build."
+   exit 1
+fi
+
+if [ ! -z $1  ]; then
+    echo "Updating .env to $1"
+    rm -f $DAISY_PATH/.env
+    echo "USE_ROS_DISTRO=$1" > $DAISY_PATH/.env
+fi
+
+echo "Deleting log build and install of your workspace."
+sudo rm -rf $ROS2_WS_MOUNT/build
+sudo rm -rf $ROS2_WS_MOUNT/install
+sudo rm -rf $ROS2_WS_MOUNT/log
+
+cd $DAISY_PATH
+echo "Stopping al running containers."
+./bin/stop
+export COMMAND=$@
+. $DAISY_PATH/.env
+docker compose build
+
