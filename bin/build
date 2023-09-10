@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 
 . $DAISY_PATH/.env
+#ASCII ART REF: https://emojicombos.com/daisy
+echo '''
+===========DAISY TOOL===========
+             ⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⢾⣻⡷⣷⣦⡐⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⡀⣠⣿⣟⣾⣟⣯⢿⣳⣯⣇⣠⣤⣴⣶⣶⡶⣦⣄⡀⢀⠀⠀
+⠀⠀⠀⠀⠀⠁⣾⢷⣏⣷⢿⣹⡿⣏⣷⢿⣷⣏⡿⣾⢷⣿⣏⡿⣿⡀⠁⠀
+⠀⠀⢀⣠⣶⣶⢿⣻⢯⣟⡿⠙⠉⡉⠉⠙⠺⣯⣿⣻⢯⣷⣻⣽⢯⣷⠈⠀
+⡄⢠⣿⣟⡷⣯⡿⣯⣿⡛⠁⠄⠡⢀⠡⠈⠄⡙⣷⣿⣻⣽⣻⢾⡿⡽⠀⠂
+⡀⣿⣳⣯⢿⣻⣽⢷⣻⣇⠈⠄⡁⠂⠄⡁⠂⠄⣿⣾⣽⣳⡿⣯⠟⢀⠂⠀
+⢂⠹⣻⢾⣟⣯⣟⡿⣽⣻⣆⠂⠄⡁⠂⠄⡁⣢⣿⢷⣯⢿⣽⢷⣄⠁⠀⠀
+⠀⠂⠈⠻⢟⣾⣽⡟⢯⣿⡽⣿⣷⣶⣥⣶⣾⢿⣯⢿⣾⣻⡽⣟⣾⡆⠁⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⣾⣯⢿⣳⣟⣾⣽⣳⣿⣻⢾⣟⡷⣿⡽⣟⣷⠃⡄⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⣿⣾⡿⣏⣿⣾⣹⣷⠿⠹⣿⣾⢿⣷⣿⢿⠇⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠆⠹⣷⣻⣟⡾⣷⢯⡟⠀⠒⠀⠉⠉⠈⠉⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠷⣟⡿⠽⠋⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+'''
 
 if [[ -z $1 && -z $USE_ROS_DISTRO ]]; then
     echo "No ROS2 distro provided. Exiting now!"
@@ -14,7 +32,11 @@ if [[ ! " ${SUPPORTED_DISTRO[*]} " =~ " $1 " && -z $USE_ROS_DISTRO ]]; then
     exit 1
 fi
 
-echo "Building Docker image for ROS2 $1."
+if [ -z $1 ]; then
+    echo "Building Docker image for ROS2 $USE_ROS_DISTRO."
+else
+    echo "Building Docker image for ROS2 $1."
+fi
 echo ""
 
 if [[ ! -z $1 && $USE_ROS_DISTRO != $1 && -f "$ROS2_WS_MOUNT/install.repos"  ]]; then
@@ -28,6 +50,7 @@ if [[ ! -z $1 && $USE_ROS_DISTRO != $1 && -f "$ROS2_WS_MOUNT/install.repos"  ]];
         exit 1
     fi
 fi
+
 
 if [ ! -d "$ROS2_WS_MOUNT/src" ]; then
     mkdir $ROS2_WS_MOUNT/src
