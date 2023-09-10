@@ -9,7 +9,7 @@ if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
 fi
 
 REMOTE_DISPLAY=${DISPLAY%:*}
-if [ -z $REMOTE_DISPLAY ]; then
+if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
     xhost +
 fi
 

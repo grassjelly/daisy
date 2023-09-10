@@ -9,7 +9,7 @@ if [-z "$0" ]; then
 fi
 
 REMOTE_DISPLAY=${DISPLAY%:*}
-if [ -z $REMOTE_DISPLAY ]; then
+if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
     xhost +
 fi
 

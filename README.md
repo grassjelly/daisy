@@ -14,8 +14,8 @@ A huge thanks to Sebastian Castro for this [blog post](https://roboticseabass.co
 |-------------------|------------------------------|---------------------------------------------------------|
 | `daisy-build`     |<foxy, galactic, humble, iron>| Build the workspace's Docker image.                     |
 | `daisy-exec`      |<bash_command>                | Run a bash command inside the container from host.      |
+| `daisy-cmd`       |<bash_command>                | Run a bash command on host relative to the compose file.|     
 | `daisy-shell`     |                              | Enter and run commands inside the Docker container.     |     
-| `daisy-up`        |<compose_services>            | Run compose services.                                   |     
 | `daisy-stop`      |                              | Stop all containers.                                    |
 | `daisy-gitignore` |                              | Add _build_ _install_ _log_ to .gitignore of workspace. |
 | `daisy-template`  |src/my_package                | Add docker template to ROS2 package.                    |
@@ -63,28 +63,29 @@ For instance building the workspace:
 ```
 daisy-exec colcon build
 ```
-or running RVIZ:
+Running RVIZ:
 ```
 daisy-exec rviz2
 ```
+or launching your packages:
+```
+daisy-exec ros2 launch my_package my_launch_file.launch.py
+```
 
-#### 2.2 Shell mode
-This mode allows you to run commands within the docker container itself like you're using it natively in your host machine:
+#### 2.2 Running bash commands relative to the docker-compose.yaml.
+Using `daisy-cmd`, you can run normal bash commands that are relative to the docker-compose.yaml file. This means you can run `docker compose` commands without being on the same directory as the compose file. For instance:
+```
+daisy-cmd docker compose up my_service
+```
+
+#### 2.3 Shell mode
+This mode allows you to run commands within the docker container itself like you're using it natively in your host machine. This can be useful if you want to troubleshoot something inside the container:
 ```
 user@host-machine:~/my_ros2_ws$ daisy-shell
 ```
 Once inside the container, you can start using ROS2 commands. For instance:
 ```
-root@humble-container:~/my_ros2_ws$  ros2 launch my_package my_launch_file.launch.py
-```
-#### 2.3 Running compose services
-Add your custom services in the docker-compose.yaml and run it with `daisy-up`.
-```
-daisy-up my_service1 my_service2
-```
-There's built-in service to launch `rviz2` and `colcon build`, for example:
-```
-daisy-up rviz
+root@humble-container:~/my_ros2_ws$ ros2 topic list
 ```
 
 #### 2.4 Stopping the container
