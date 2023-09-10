@@ -35,3 +35,11 @@ services:
     container_name: $ROS2_WS_CONTAINER_NAME-exec
     extends: dev
     command: ${COMMAND}
+
+  rviz:
+    extends: dev
+    command: rviz2
+
+  colcon-build:
+    extends: dev
+    command: colcon build
