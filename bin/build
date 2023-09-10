@@ -14,6 +14,21 @@ if [[ ! " ${SUPPORTED_DISTRO[*]} " =~ " $1 " && -z $USE_ROS_DISTRO ]]; then
     exit 1
 fi
 
+echo "Building Docker image for ROS2 $1."
+echo ""
+
+if [[ ! -z $1 && $USE_ROS_DISTRO != $1 && -f "$ROS2_WS_MOUNT/install.repos"  ]]; then
+    echo "A rosinstall file has been detected in your workspace using ROS2 $USE_ROS_DISTRO."
+    echo "Building your workspace using ROS2 $1 might cause compatibility issues."
+    echo "Do you want to continue?"
+    echo -n "Yes [y] or No [n]: " 
+    read reply
+    if [[ "$reply" == "n" || "$reply" == "N" ]]; then
+        echo "Exiting now!"
+        exit 1
+    fi
+fi
+
 if [ ! -d "$ROS2_WS_MOUNT/src" ]; then
     mkdir $ROS2_WS_MOUNT/src
 fi
@@ -25,6 +40,13 @@ if [ -f "$ROS2_WS_MOUNT/install.repos" ]; then
         sudo apt update -y
         sudo apt install -y python3-vcstool
     fi
+    echo "Found a rosinstall file in your workspace." 
+    echo "Downloading the following local repositories now:"
+    echo ""
+    cat $ROS2_WS_MOUNT/install.repos
+    echo ""
+    echo "in $ROS2_WS_MOUNT/src"
+    echo ""
     vcs import $ROS2_WS_MOUNT/src --skip-existing --input $ROS2_WS_MOUNT/install.repos --recursive
 fi
 
@@ -33,16 +55,24 @@ if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
    exit 1
 fi
 
+echo "Deleting log build and install directories of your workspace."
+echo "Do you want to continue?"
+echo -n "Yes [y] or No [n]: " 
+read reply
+if [[ "$reply" == "n" || "$reply" == "N" ]]; then
+    echo "Exiting now!"
+    exit 1
+fi
+
+sudo rm -rf $ROS2_WS_MOUNT/build
+sudo rm -rf $ROS2_WS_MOUNT/install
+sudo rm -rf $ROS2_WS_MOUNT/log
+
 if [ ! -z $1  ]; then
     echo "Updating .env to $1"
     rm -f $DAISY_PATH/.env
     echo "USE_ROS_DISTRO=$1" > $DAISY_PATH/.env
 fi
-
-echo "Deleting log build and install of your workspace."
-sudo rm -rf $ROS2_WS_MOUNT/build
-sudo rm -rf $ROS2_WS_MOUNT/install
-sudo rm -rf $ROS2_WS_MOUNT/log
 
 cd $DAISY_PATH
 echo "Stopping al running containers."

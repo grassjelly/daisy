@@ -19,6 +19,10 @@ if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
 fi
 
 vcs export $ROS2_WS_MOUNT/src > install.repos
+echo "Saving the following local repositories: "
+echo ""
+cat $ROS2_WS_MOUNT/install.repos
+echo ""
 echo "Export done! Local repositories saved in: "
 echo "$ROS2_WS_MOUNT/install.repos"
 echo ""
