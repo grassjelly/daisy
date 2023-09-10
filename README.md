@@ -57,7 +57,7 @@ daisy-build <distro>
 You'll only need to run this command once or when you have made changes on on the dependencies (package.xml). You can modify the Dockerfile as you wish to add custom installation commands just remember to run `daisy-build` again when you're done.
 
 ### 2. Usage
-#### 2.1 Running a comand from the host machine to the Docker container
+#### 2.1 Running a command from the host machine to the Docker container
 
 For instance building the workspace:
 ```
