@@ -31,11 +31,6 @@ services:
     extends: dev
     command: sleep infinity
 
-  exec:
-    container_name: $ROS2_WS_CONTAINER_NAME-exec
-    extends: dev
-    command: ${COMMAND}
-
   rviz:
     extends: dev
     command: rviz2

@@ -13,6 +13,5 @@ if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
     xhost +
 fi
 
-export COMMAND=" " #just to refrain daisy compose from complaining that COMMAND env variable at 'exec'' service is empty.
 . $DAISY_PATH/.env
 docker compose exec shell /bin/bash

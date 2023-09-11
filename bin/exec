@@ -3,9 +3,15 @@
 set -e
 
 if [ -z "$0" ]; then
-    echo "No command was provided. You can pass a command to daisy-exec to run inside the container."
-    echo "$ daisy-exec ros2 topic list"
+    echo "No command was provided."
+    echo "usage: $ daisy-exec ros2 topic list"
     exit 1
+fi
+
+cd $DAISY_PATH
+
+if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
+    docker compose up shell -d
 fi
 
 REMOTE_DISPLAY=${DISPLAY%:*}
@@ -14,6 +20,14 @@ if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
 fi
 
 cd $DAISY_PATH
-export COMMAND=$@
 . $DAISY_PATH/.env
-docker compose up exec
+
+SOURCE_WS=""
+if [ -d $ROS2_WS_MOUNT/build ]; then
+    COMMAND="source /root/$ROS2_WS_CONTAINER_NAME/install/setup.bash && $@"
+else
+    COMMAND="$@"
+fi
+
+docker exec -it ros2_ws /bin/bash -c "source /opt/ros/$USE_ROS_DISTRO/setup.bash && $COMMAND"
+

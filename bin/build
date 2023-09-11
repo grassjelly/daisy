@@ -100,7 +100,6 @@ fi
 cd $DAISY_PATH
 echo "Stopping all running containers."
 ./bin/stop
-export COMMAND=$@
 . $DAISY_PATH/.env
 docker compose build
 

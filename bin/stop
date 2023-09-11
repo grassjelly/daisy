@@ -3,6 +3,5 @@
 set -e
 
 cd $DAISY_PATH
-export COMMAND=$@
 . $DAISY_PATH/.env
 docker compose stop
