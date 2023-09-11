@@ -8,6 +8,5 @@ if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
 fi
 
 cd $DAISY_PATH
-export COMMAND=" " #just to refrain daisy compose from complaining that COMMAND env variable at 'exec'' service is empty.
 . $DAISY_PATH/.env
 $@

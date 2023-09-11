@@ -3,15 +3,15 @@
 set -e
 
 cd $DAISY_PATH
-
-if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
-    docker compose up shell -d
-fi
+. $DAISY_PATH/.env
 
 REMOTE_DISPLAY=${DISPLAY%:*}
 if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
     xhost +
 fi
 
-. $DAISY_PATH/.env
+if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
+    docker compose up shell -d
+fi
+
 docker compose exec shell /bin/bash

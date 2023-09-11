@@ -9,20 +9,17 @@ if [ -z "$0" ]; then
 fi
 
 cd $DAISY_PATH
-
-if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
-    docker compose up shell -d
-fi
+. $DAISY_PATH/.env
 
 REMOTE_DISPLAY=${DISPLAY%:*}
 if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
     xhost +
 fi
 
-cd $DAISY_PATH
-. $DAISY_PATH/.env
+if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
+    docker compose up shell -d
+fi
 
-SOURCE_WS=""
 if [ -d $ROS2_WS_MOUNT/build ]; then
     COMMAND="source /root/$ROS2_WS_CONTAINER_NAME/install/setup.bash && $@"
 else
