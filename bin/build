@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 . $DAISY_PATH/.env
 #ASCII ART REF: https://emojicombos.com/daisy
 echo '''
@@ -51,7 +53,6 @@ if [[ ! -z $1 && $USE_ROS_DISTRO != $1 && -f "$ROS2_WS_MOUNT/install.repos"  ]];
     fi
 fi
 
-
 if [ ! -d "$ROS2_WS_MOUNT/src" ]; then
     mkdir $ROS2_WS_MOUNT/src
 fi
@@ -78,19 +79,6 @@ if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
    exit 1
 fi
 
-echo "Deleting log build and install directories of your workspace."
-echo "Do you want to continue?"
-echo -n "Yes [y] or No [n]: " 
-read reply
-if [[ "$reply" == "n" || "$reply" == "N" ]]; then
-    echo "Exiting now!"
-    exit 1
-fi
-
-sudo rm -rf $ROS2_WS_MOUNT/build
-sudo rm -rf $ROS2_WS_MOUNT/install
-sudo rm -rf $ROS2_WS_MOUNT/log
-
 if [ ! -z $1  ]; then
     echo "Updating .env to $1"
     rm -f $DAISY_PATH/.env
@@ -103,3 +91,22 @@ echo "Stopping all running containers."
 . $DAISY_PATH/.env
 docker compose build
 
+echo ""
+echo "Done building the Docker image."
+echo ""
+
+echo "Do you want to delete log build and install directories of your workspace."
+echo -n "Yes [y] or No [n]: " 
+read reply
+if [[ "$reply" == "n" || "$reply" == "N" ]]; then
+    echo ""
+    echo $(ls $ROS2_WS_MOUNT)
+    exit 1
+fi
+
+sudo rm -rf $ROS2_WS_MOUNT/build
+sudo rm -rf $ROS2_WS_MOUNT/install
+sudo rm -rf $ROS2_WS_MOUNT/log
+
+echo ""
+echo $(ls $ROS2_WS_MOUNT)

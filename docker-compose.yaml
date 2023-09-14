@@ -1,30 +1,35 @@
 version: "3.9"
 services:   
   base:
-    image: ${ROS2_WS_CONTAINER_NAME}-${USE_ROS_DISTRO}-dev
+    image: ${ROS2_WS_CONTAINER_NAME}-${USE_ROS_DISTRO}
     build:
       context: ../
       dockerfile: daisy/Dockerfile
       args:
-        USE_ROS_DISTRO: ${USE_ROS_DISTRO}
-        ROS2_WS_CONTAINER_NAME: ${ROS2_WS_CONTAINER_NAME}
+        - USE_ROS_DISTRO=${USE_ROS_DISTRO}
+        - ROS2_WS_CONTAINER_NAME=${ROS2_WS_CONTAINER_NAME}
+        - UID=${UID:-1000}
+        - GID=${UID:-1000}
+        - USERNAME=${USERNAME:-ubuntu}
+        - USE_VNC=${USE_VNC}
       target: base
 
   dev:
-    hostname: ${USE_ROS_DISTRO}-container
-    image: ${ROS2_WS_CONTAINER_NAME}-${USE_ROS_DISTRO}-dev
+    hostname: ${HOSTNAME}
+    image: ${ROS2_WS_CONTAINER_NAME}-${USE_ROS_DISTRO}
     stdin_open: true
     tty: true
     network_mode: host
     ipc: host
     privileged: true
+    user: ${USERNAME}
     environment:
       - DISPLAY=${DISPLAY} 
       - QT_X11_NO_MITSHM=1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/root/.Xauthority
-      - $ROS2_WS_MOUNT:/root/$ROS2_WS_CONTAINER_NAME
+      - $ROS2_WS_MOUNT:/home/${USERNAME:-ubuntu}/$ROS2_WS_CONTAINER_NAME
 
   shell:
     container_name: ${ROS2_WS_CONTAINER_NAME}
