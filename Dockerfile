@@ -13,6 +13,7 @@ RUN groupadd --gid $GID ${USERNAME} && \
     chmod 0440 /etc/sudoers.d/${USERNAME} && \
     mkdir -p /home/${USERNAME} && \
     chown -R ${UID}:${GID} /home/${USERNAME}
+RUN echo "export USER=${USERNAME}" >> /home/${USERNAME}/.bashrc
 
 RUN apt-get update -q
 RUN apt-get install -y ros-${ROS_DISTRO}-rviz2 python3-pip wget
