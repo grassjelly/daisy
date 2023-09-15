@@ -97,7 +97,7 @@ cd $DAISY_PATH
 echo "Stopping all running containers."
 ./bin/stop
 . $DAISY_PATH/.env
-docker compose build
+docker compose build --no-cache
 
 echo ""
 echo "Done building the Docker image."
