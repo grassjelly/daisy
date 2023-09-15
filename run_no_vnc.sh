@@ -1,0 +1,67 @@
+#!/bin/bash
+
+#SOURCE: https://github.com/Tiryoh/docker-ros2-desktop-vnc
+
+git clone https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc
+apt-get install tigervnc-standalone-server tigervnc-common python3-pip
+pip install git+https://github.com/novnc/websockify.git@v0.10.0
+ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html
+
+# Create User
+USER=${USER:-root}
+HOME=/root
+if [ "$USER" != "root" ]; then
+    echo "* enable custom user: $USER"
+    useradd --create-home --shell /bin/bash --user-group --groups adm,sudo $USER
+    echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sud
+    PASSWORD=ubuntu
+    HOME=/home/$USER
+    echo "$USER:$PASSWORD" | /usr/sbin/chpasswd 2> /dev/null || echo ""
+    cp -r /root/{.config,.gtkrc-2.0,.asoundrc} ${HOME} 2>/dev/null
+    chown -R $USER:$USER ${HOME}
+    [ -d "/dev/snd" ] && chgrp -R adm /dev/snd
+fi
+
+# VNC password
+VNC_PASSWORD=${PASSWORD:-ubuntu}
+
+mkdir -p $HOME/.vnc
+echo $VNC_PASSWORD | vncpasswd -f > $HOME/.vnc/passwd
+chmod 600 $HOME/.vnc/passwd
+chown -R $USER:$USER $HOME
+sed -i "s/password = WebUtil.getConfigVar('password');/password = '$VNC_PASSWORD'/" $HOME/novnc/app/ui.js
+sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'scale');/g" $HOME/novnc/app/ui.js
+
+# xstartup
+XSTARTUP_PATH=$HOME/.vnc/xstartup
+cat << EOF > $XSTARTUP_PATH
+#!/bin/sh
+unset DBUS_SESSION_BUS_ADDRESS
+mate-session
+EOF
+chown $USER:$USER $XSTARTUP_PATH
+chmod 755 $XSTARTUP_PATH
+
+# vncserver launch
+VNCRUN_PATH=$HOME/.vnc/vnc_run.sh
+cat << EOF > $VNCRUN_PATH
+#!/bin/sh
+
+if [ $(uname -m) = "aarch64" ]; then
+    LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver :1 -fg -geometry 1920x1080 -depth 24
+else
+    vncserver :1 -fg -geometry 1920x1080 -depth 24
+fi
+EOF
+
+# Supervisor
+CONF_PATH=/etc/supervisor/conf.d/supervisord.conf
+cat << EOF > $CONF_PATH
+[supervisord]
+nodaemon=true
+user=root
+[program:vnc]
+command=gosu "$USER" bash "$VNCRUN_PATH"
+[program:novonc]
+command=gosu "$USER" bash -c "websockify --web=/usr/lib/novnc 80 localhost:5901
+EOF

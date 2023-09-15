@@ -39,7 +39,7 @@ VNCRUN_PATH=$HOME/.vnc/vnc_run.sh
 cat << EOF > $VNCRUN_PATH
 #!/bin/sh
 
-rm -rf /tmp/.X200-lock
+rm -f /tmp/.X200-lock
 rm -f /tmp/.X11-unix/X200
 
 if [ $(uname -m) = "aarch64" ]; then
@@ -49,5 +49,5 @@ else
 fi
 EOF
 
-sed -i "`wc -l < /entrypoint.sh`i\\bash $HOME/.vnc/vnc_run.sh\\" /entrypoint.sh
-sed -i "`wc -l < /entrypoint.sh`i\\websockify --web=$HOME/novnc/ 90 localhost:6100 \\" /entrypoint.sh
+sed -i "`wc -l < /entrypoint.sh`i\\bash $HOME/.vnc/vnc_run.sh &\\" /entrypoint.sh
+sed -i "`wc -l < /entrypoint.sh`i\\sudo websockify --web=$HOME/novnc/ 90 localhost:6100 &\\" /entrypoint.sh
