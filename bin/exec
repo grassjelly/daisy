@@ -17,11 +17,11 @@ if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
 fi
 
 if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
-    docker compose up shell -d
+    docker compose up shell -d --force-recreate
 fi
 
-if [ -d $ROS2_WS_MOUNT/build ]; then
-    COMMAND="source /root/$ROS2_WS_CONTAINER_NAME/install/setup.bash && $@"
+if [ -z $ROS2_WS_MOUNT/.last_build_errors ]; then
+    COMMAND="source /home/$USERNAME/$ROS2_WS_CONTAINER_NAME/install/setup.bash && $@"
 else
     COMMAND="$@"
 fi

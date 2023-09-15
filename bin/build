@@ -97,11 +97,15 @@ cd $DAISY_PATH
 echo "Stopping all running containers."
 ./bin/stop
 . $DAISY_PATH/.env
-docker compose build --no-cache
+docker compose build
 
 echo ""
 echo "Done building the Docker image."
 echo ""
+
+if [ ! -f $ROS2_WS_MOUNT/.last_build_errors ]; then
+    touch $ROS2_WS_MOUNT/.last_build_errors
+fi
 
 echo "Do you want to delete log build and install directories of your workspace?"
 echo -n "Yes [y] or No [n]: " 
@@ -118,3 +122,4 @@ sudo rm -rf $ROS2_WS_MOUNT/log
 
 echo ""
 echo $(ls $ROS2_WS_MOUNT)
+

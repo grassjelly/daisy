@@ -21,6 +21,7 @@ services:
     tty: true
     network_mode: host
     ipc: host
+    pid: host
     privileged: true
     user: ${USERNAME}
     environment:
@@ -29,8 +30,9 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/root/.Xauthority
-      - $ROS2_WS_MOUNT:/home/${USERNAME:-ubuntu}/$ROS2_WS_CONTAINER_NAME
-
+      - $ROS2_WS_MOUNT:/home/${USERNAME}/$ROS2_WS_CONTAINER_NAME
+      - $HOME/.ros/log:/home/${USERNAME}/.ros/log
+      
   shell:
     container_name: ${ROS2_WS_CONTAINER_NAME}
     extends: dev

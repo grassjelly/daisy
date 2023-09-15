@@ -5,6 +5,7 @@ set -e
 echo "build" >> $ROS2_WS_MOUNT/.gitignore
 echo "log" >> $ROS2_WS_MOUNT/.gitignore
 echo "install" >> $ROS2_WS_MOUNT/.gitignore
+echo ".last_build_errors" >> $ROS2_WS_MOUNT/.gitignore
 rm -rf $DAISY_PATH/.git
 echo ".gitignore added to $ROS2_WS_MOUNT."
 echo "You can now use git in your workspace (eg. git init)."

@@ -85,7 +85,7 @@ user@host-machine:~/my_ros2_ws$ daisy-shell
 ```
 Once inside the container, you can start using ROS2 commands. For instance:
 ```
-root@humble-container:~/my_ros2_ws$ ros2 topic list
+user@humble-container:~/my_ros2_ws$ ros2 topic list
 ```
 
 #### 2.4 Stopping the container

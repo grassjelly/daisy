@@ -11,7 +11,7 @@ if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
 fi
 
 if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
-    docker compose up shell -d
+    docker compose up shell -d --force-recreate
 fi
 
 docker compose exec shell /bin/bash
