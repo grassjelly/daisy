@@ -2,9 +2,14 @@
 
 set -e
 
-if [ -z "$0" ]; then
+if [ -z $1 ]; then
     echo "No command was provided."
     echo "usage: $ daisy-exec ros2 topic list"
+    exit 1
+fi
+
+if [ ! -f "$ROS2_WS_MOUNT/.last_build_errors" ]; then
+    echo "Run daisy-build before running this command."
     exit 1
 fi
 
@@ -20,11 +25,10 @@ if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
     docker compose up shell -d --force-recreate
 fi
 
-if [ -z $ROS2_WS_MOUNT/.last_build_errors ]; then
+if [[ -z $(cat $ROS2_WS_MOUNT/.last_build_errors) ]]; then
     COMMAND="source /home/$USERNAME/$ROS2_WS_CONTAINER_NAME/install/setup.bash && $@"
 else
     COMMAND="$@"
 fi
 
 docker exec -it ros2_ws /bin/bash -c "source /opt/ros/$USE_ROS_DISTRO/setup.bash && $COMMAND"
-

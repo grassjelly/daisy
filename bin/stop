@@ -2,6 +2,11 @@
 
 set -e
 
+if [ ! -f $ROS2_WS_MOUNT/.last_build_errors ]; then
+    echo "Run daisy-build before running this command."
+    exit 1
+fi
+
 cd $DAISY_PATH
 . $DAISY_PATH/.env
 docker compose stop
