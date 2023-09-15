@@ -132,3 +132,7 @@ docker compose up test
 ```
 
 You can check out this comprehensive [tutorial](https://roboticseabass.com/2023/07/09/updated-guide-docker-and-ros2/) to learn more about ROS2-Docker workflows.
+
+### 4. VNC
+
+You can access the container's Desktop when you're on shell mode by going opening <host_machine_ip>:90 on Chrome browser. Alternatively you can disable the VNC feature by setting `USE_VNC` to `false` in daiy/.env file.
