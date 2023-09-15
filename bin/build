@@ -34,6 +34,14 @@ if [[ ! " ${SUPPORTED_DISTRO[*]} " =~ " $1 " && -z $USE_ROS_DISTRO ]]; then
     exit 1
 fi
 
+echo "This will stop all running containers. Do you want to continue?"
+echo -n "Yes [y] or No [n]: " 
+read reply
+if [[ "$reply" == "n" || "$reply" == "N" ]]; then
+    echo ""
+    exit 1
+fi
+
 if [ -z $1 ]; then
     echo "Building Docker image for ROS2 $USE_ROS_DISTRO."
 else
@@ -95,7 +103,7 @@ echo ""
 echo "Done building the Docker image."
 echo ""
 
-echo "Do you want to delete log build and install directories of your workspace."
+echo "Do you want to delete log build and install directories of your workspace?"
 echo -n "Yes [y] or No [n]: " 
 read reply
 if [[ "$reply" == "n" || "$reply" == "N" ]]; then
