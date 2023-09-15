@@ -13,7 +13,6 @@ RUN groupadd --gid $GID ${USERNAME} && \
     chmod 0440 /etc/sudoers.d/${USERNAME} && \
     mkdir -p /home/${USERNAME} && \
     chown -R ${UID}:${GID} /home/${USERNAME}
-RUN echo "export USER=${USERNAME}" >> /home/${USERNAME}/.bashrc
 
 RUN apt-get update -q
 RUN apt-get install -y ros-${ROS_DISTRO}-rviz2 python3-pip wget
@@ -29,14 +28,16 @@ RUN echo "fi" >> /home/${USERNAME}/.bashrc
 COPY daisy/entrypoint.sh /
 RUN sed -i "s/rosdistro/${ROS_DISTRO}/" /entrypoint.sh
 RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/" /entrypoint.sh
+RUN sed -i "s/username/${USERNAME}/" /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Install Distro specific components
-COPY daisy/custom_distro_install.sh /home/${USERNAME}
-RUN sed -i "s/rosdistro/${ROS_DISTRO}/" /home/${USERNAME}/custom_distro_install.sh
-RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/" /home/${USERNAME}/custom_distro_install.sh
-RUN chmod +x /home/${USERNAME}/custom_distro_install.sh
-RUN /home/${USERNAME}/custom_distro_install.sh
+COPY daisy/custom_distro_install.sh /
+RUN sed -i "s/rosdistro/${ROS_DISTRO}/" /custom_distro_install.sh
+RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/" /custom_distro_install.sh
+RUN sed -i "s/username/${USERNAME}/" /custom_distro_install.sh
+RUN chmod +x /custom_distro_install.sh
+RUN /custom_distro_install.sh
 
 # Copy the source files so we could find its dependencies 
 RUN mkdir -p /home/${USERNAME}/${ROS2_WS_CONTAINER_NAME}/src
