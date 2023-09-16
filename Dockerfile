@@ -27,7 +27,8 @@ RUN apt-get install -y ros-${ROS_DISTRO}-rviz2 python3-pip wget
 
 # Write ENV vars export to .bashrc
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ${HOME}/.bashrc
-RUN echo "if [[ \$(wc -w < ${ROS2_WS}/.last_build_errors) == 0 ]]; then" >> ${HOME}/.bashrc
+RUN echo "sleep 0.5" >> ${HOME}/.bashrc
+RUN echo "if [[ \"\$(wc -w < ${ROS2_WS}/.last_build_errors)\" == \"0\" ]]; then" >> ${HOME}/.bashrc
 RUN echo "    source ${ROS2_WS}/install/setup.bash" >> ${HOME}/.bashrc
 RUN echo "fi" >> ${HOME}/.bashrc
 
