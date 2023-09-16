@@ -61,11 +61,13 @@ if [[ ! -z $1 && $USE_ROS_DISTRO != $1 && -f "$ROS2_WS_MOUNT/install.repos"  ]];
     fi
 fi
 
+NO_SRC=false
 if [ ! -d "$ROS2_WS_MOUNT/src" ]; then
     mkdir $ROS2_WS_MOUNT/src
+    NO_SRC=true
 fi
 
-if [ -f "$ROS2_WS_MOUNT/install.repos" ]; then
+if [ -f "$ROS2_WS_MOUNT/install.repos" && "$NO_SRC" == "true" ]; then
     if [[ -z $(vcs -h) ]]; then
         echo "Installing VCS Tool for exporting dependencies."
         curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
