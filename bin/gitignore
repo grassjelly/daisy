@@ -2,10 +2,18 @@
 
 set -e
 
-echo "build" >> $ROS2_WS_MOUNT/.gitignore
-echo "log" >> $ROS2_WS_MOUNT/.gitignore
-echo "install" >> $ROS2_WS_MOUNT/.gitignore
-echo ".last_build_errors" >> $ROS2_WS_MOUNT/.gitignore
+write_to_ignore(){
+if ! grep -qF "$IGNORE" "$ROS2_WS_MOUNT/.gitignore" ; then
+    echo "$IGNORE" >> $ROS2_WS_MOUNT/.gitignore
+  fi
+}
+
+IGNORE_ITEMS=("build" "log" "install" ".last_build_errors")
+for IGNORE in "${IGNORE_ITEMS[@]}"; do
+    write_to_ignore
+done
+
 rm -rf $DAISY_PATH/.git
 echo ".gitignore added to $ROS2_WS_MOUNT."
 echo "You can now use git in your workspace (eg. git init)."
+
