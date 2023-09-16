@@ -30,5 +30,5 @@ echo ""
 
 cd $DAISY_PATH
 ./bin/gitignore
-echo "src" >> $ROS2_WS_MOUNT/.gitignore
+echo "/src" >> $ROS2_WS_MOUNT/.gitignore
 
