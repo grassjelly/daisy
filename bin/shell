@@ -11,11 +11,12 @@ cd $DAISY_PATH
 . $DAISY_PATH/.env
 
 REMOTE_DISPLAY=${DISPLAY%:*}
-if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY ]]; then
+if [[ -z "$REMOTE_DISPLAY" && ! -z "$DISPLAY" ]]; then
     xhost +
 fi
 
 if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q shell)` ]; then
+    echo "Creating a new container"
     docker compose up shell -d --force-recreate
 fi
 

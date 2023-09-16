@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ -z $(vcs -h) ]]; then
+if [[ -z "$(vcs -h)" ]]; then
     echo "Installing VCS Tool for exporting dependencies."
     curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
     sudo apt update -y
@@ -11,10 +11,11 @@ fi
 
 if [ ! -d $ROS2_WS_MOUNT/src ]; then
     echo "$ROS2_WS_MOUNT/src does not exit. Exiting now!"
+    exit 1
 fi
 
-if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
-   echo "$ROS2_WS_MOUNT/src is empty. Download all the repositorie before running daisy-build."
+if [[ -z "$(ls -A $ROS2_WS_MOUNT/src)" ]]; then
+   echo "$ROS2_WS_MOUNT/src is empty. Download all the repositories before running daisy-build."
    exit 1
 fi
 
