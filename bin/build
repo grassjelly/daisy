@@ -34,6 +34,13 @@ if [[ ! " ${SUPPORTED_DISTRO[*]} " =~ " $1 " && -z $USE_ROS_DISTRO ]]; then
     exit 1
 fi
 
+if [ -z $1 ]; then
+    echo "Building Docker image for ROS2 $USE_ROS_DISTRO."
+else
+    echo "Building Docker image for ROS2 $1."
+fi
+echo ""
+
 echo "This will stop all running containers. Do you want to continue?"
 echo -n "Yes [y] or No [n]: " 
 read reply
@@ -41,13 +48,6 @@ if [[ "$reply" == "n" || "$reply" == "N" ]]; then
     echo ""
     exit 1
 fi
-
-if [ -z $1 ]; then
-    echo "Building Docker image for ROS2 $USE_ROS_DISTRO."
-else
-    echo "Building Docker image for ROS2 $1."
-fi
-echo ""
 
 if [[ ! -z $1 && $USE_ROS_DISTRO != $1 && -f "$ROS2_WS_MOUNT/install.repos"  ]]; then
     echo "A rosinstall file has been detected in your workspace using ROS2 $USE_ROS_DISTRO."
@@ -87,10 +87,10 @@ if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
    exit 1
 fi
 
-if [ ! -z $1  ]; then
+if [ ! -z "$1"  ]; then
     echo "Updating .env to $1"
-    rm -f $DAISY_PATH/.env
-    echo "USE_ROS_DISTRO=$1" > $DAISY_PATH/.env
+    sed -i "/USE_ROS_DISTRO/ s/.*/USE_ROS_DISTRO=$1/" $DAISY_PATH/.env
+    . $DAISY_PATH/.env
 fi
 
 cd $DAISY_PATH
