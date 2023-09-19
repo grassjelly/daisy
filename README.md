@@ -135,4 +135,24 @@ You can check out this comprehensive [tutorial](https://roboticseabass.com/2023/
 
 ### 4. VNC
 
-You can access the container's Desktop when you're on shell mode by going opening <host_machine_ip>:90 on Chrome browser. Alternatively you can disable the VNC feature by setting `USE_VNC` to `false` in daiy/.env file.
+#### 4.1 Enabling VNC Server
+The VNC server is enabled by default and can be toggled in daisy/.env file:
+```
+USE_VNC=true
+```
+#### 4.2 VNC Client
+A web-based VNC client is available from Chrome browser. Address: <host_machine_ip>:90 .
+
+#### 4.3 VNC Display
+You can pipe your application's display to the VNC server by setting the `DISPLAY` env variable to `$HOSTNAME:200`:
+```
+export DISPLAY=$HOSTNAME:200
+daisy-cmd docker compose up my_service
+```
+or set it in  daisy/docker-compose.yaml file:
+```
+my_service:
+  environment:
+    - DISPLAY=$HOSTNAME:200
+  command: ros2 launch my_package my_package.launch.py
+```
