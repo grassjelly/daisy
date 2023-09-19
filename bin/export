@@ -2,6 +2,12 @@
 
 set -e
 
+write_to_ignore(){
+if ! grep -qF "$IGNORE" "$ROS2_WS_MOUNT/.gitignore" ; then
+    echo "$IGNORE" >> $ROS2_WS_MOUNT/.gitignore
+  fi
+}
+
 if [[ -z "$(vcs -h)" ]]; then
     echo "Installing VCS Tool for exporting dependencies."
     curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
@@ -30,5 +36,5 @@ echo ""
 
 cd $DAISY_PATH
 ./bin/gitignore
-echo "/src" >> $ROS2_WS_MOUNT/.gitignore
-
+IGNORE="/src"
+write_to_ignore
