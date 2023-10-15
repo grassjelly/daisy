@@ -10,7 +10,7 @@ if [[ "$(wc -w < /home/username/workspace/.last_build_errors)" == "0" ]]; then
 fi
 
 if [ "$ROS_DISTRO" == "humble" ]; then
-    export FASTRTPS_DEFAULT_PROFILES_FILE=/home/username/.shm_off.xml
+    export FASTRTPS_DEFAULT_PROFILES_FILE=/.shm_off.xml
 fi
 
 $@
