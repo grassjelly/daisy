@@ -11,7 +11,6 @@ services:
         - UID=${UID:-1000}
         - GID=${UID:-1000}
         - USERNAME=${USERNAME:-ubuntu}
-        - USE_VNC=${USE_VNC}
       target: base
 
   dev:
@@ -29,19 +28,50 @@ services:
       - QT_X11_NO_MITSHM=1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $HOME/.Xauthority:/root/.Xauthority
+      - $HOME/.Xauthority:/home/${USERNAME}/.Xauthority
       - $ROS2_WS_MOUNT:/home/${USERNAME}/$ROS2_WS_CONTAINER_NAME
-      - $HOME/.ros/log:/home/${USERNAME}/.ros/log
-      
-  shell:
-    container_name: ${ROS2_WS_CONTAINER_NAME}
-    extends: dev
-    command: sleep infinity
+      - /tmp:/tmp
 
   rviz:
     extends: dev
     command: rviz2
 
   colcon-build:
+    container_name: colcon-build
     extends: dev
     command: colcon build
+
+  websocket-bridge:
+    container_name: websocket-bridge
+    extends: dev
+    command: ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+  
+  foxglove:
+    container_name: foxglove
+    pid: host
+    depends_on: 
+      - websocket-bridge
+    image: ghcr.io/foxglove/studio:latest
+    ports:
+      - "6060:8080"
+    volumes:
+      - ./daisy/foxglove-layout.json:/foxglove/default-layout.json
+
+  novnc:
+    extends: base
+    runtime: nvidia
+    container_name: novnc
+    image: novnc
+    env_file:
+      - .env
+    build:
+      context: ../
+      dockerfile: daisy/Dockerfile
+      target: novnc
+    hostname: ${HOSTNAME}
+    pid: host
+    network_mode: host
+    privileged: true
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority
