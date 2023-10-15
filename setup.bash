@@ -5,7 +5,7 @@ export DAISY_PATH=$ROS2_WS_MOUNT/daisy
 . $DAISY_PATH/.env
 alias daisy-build="$DAISY_PATH/bin/./build"
 alias daisy-exec="$DAISY_PATH/bin/./exec"
-alias daisy-cmd="$DAISY_PATH/bin/./cmd"
+alias daisy-compose="$DAISY_PATH/bin/./compose"
 alias daisy-shell="$DAISY_PATH/bin/./shell"
 alias daisy-stop="$DAISY_PATH/bin/./stop"
 alias daisy-gitignore="$DAISY_PATH/bin/./gitignore"

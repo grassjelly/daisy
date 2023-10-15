@@ -9,4 +9,4 @@ fi
 
 cd $DAISY_PATH
 . $DAISY_PATH/.env
-$@
+docker compose $@

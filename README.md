@@ -13,10 +13,7 @@ A huge thanks to Sebastian Castro for this [blog post](https://roboticseabass.co
 | COMMAND           | ARGUMENTS                    | DESCRIPTION                                             |
 |-------------------|------------------------------|---------------------------------------------------------|
 | `daisy-build`     |<foxy, galactic, humble, iron>| Build the workspace's Docker image.                     |
-| `daisy-exec`      |<bash_command>                | Run a bash command inside the container from host.      |
-| `daisy-cmd`       |<bash_command>                | Run a bash command on host relative to the compose file.|     
-| `daisy-shell`     |                              | Enter and run commands inside the Docker container.     |     
-| `daisy-stop`      |                              | Stop all containers.                                    |
+| `daisy-compose`   |<docker compose args>         | Similar to docker-compose. But can be run anywhere      |
 | `daisy-gitignore` |                              | Add _build_ _install_ _log_ to .gitignore of workspace. |
 | `daisy-template`  |src/my_package                | Add docker template to ROS2 package.                    |
 | `daisy-export`    |                              | Record all local repositories found in src.             |
@@ -56,42 +53,20 @@ daisy-build <distro>
 
 You'll only need to run this command once or when you have made changes on on the dependencies (package.xml). You can modify the Dockerfile as you wish to add custom installation commands just remember to run `daisy-build` again when you're done.
 
+Take note that this does not build your ROS2 workspace. You'll have to build it explicitly by running:
+```
+daisy-compose up colcon-build
+```
 ### 2. Usage
-#### 2.1 Running commands from the host machine to the Docker container
-
-For instance building the workspace:
+#### 2.1 Running bash commands relative to the docker-compose.yaml.
+Using `daisy-compose`, you can run docker compose commands that are relative to the docker-compose.yaml file. This means you can run `docker compose` commands without being on the same directory as the compose file. For instance:
 ```
-daisy-exec colcon build
+daisy-compose up my_service
 ```
-Running RVIZ:
+is similar to:
 ```
-daisy-exec rviz2
-```
-or launching your packages:
-```
-daisy-exec ros2 launch my_package my_launch_file.launch.py
-```
-
-#### 2.2 Running bash commands relative to the docker-compose.yaml.
-Using `daisy-cmd`, you can run normal bash commands that are relative to the docker-compose.yaml file. This means you can run `docker compose` commands without being on the same directory as the compose file. For instance:
-```
-daisy-cmd docker compose up my_service
-```
-
-#### 2.3 Shell mode
-This mode allows you to run commands within the docker container itself like you're using it natively in your host machine. This can be useful if you want to troubleshoot something inside the container:
-```
-user@host-machine:~/my_ros2_ws$ daisy-shell
-```
-Once inside the container, you can start using ROS2 commands. For instance:
-```
-user@humble-container:~/my_ros2_ws$ ros2 topic list
-```
-
-#### 2.4 Stopping the container
-Once you're done using the container, you can stop it by running:
-```
-daisy-stop
+cd /home/my_ros2_ws/daisy #docker-compose.yaml directory
+docker compose up my_service
 ```
 
 ### 3. Dockerizing ROS2 workspaces and ROS2 packages
@@ -132,27 +107,3 @@ docker compose up test
 ```
 
 You can check out this comprehensive [tutorial](https://roboticseabass.com/2023/07/09/updated-guide-docker-and-ros2/) to learn more about ROS2-Docker workflows.
-
-### 4. VNC
-
-#### 4.1 Enabling VNC Server
-The VNC server is enabled by default and can be toggled in daisy/.env file:
-```
-USE_VNC=true
-```
-#### 4.2 VNC Client
-A web-based VNC client is available from Chrome browser. Address: <host_machine_ip>:90 .
-
-#### 4.3 VNC Display
-You can pipe your application's display to the VNC server by setting the `DISPLAY` env variable to `$HOSTNAME:200`:
-```
-export DISPLAY=$HOSTNAME:200
-daisy-cmd docker compose up my_service
-```
-or set it in  daisy/docker-compose.yaml file:
-```
-my_service:
-  environment:
-    - DISPLAY=$HOSTNAME:200
-  command: ros2 launch my_package my_package.launch.py
-```

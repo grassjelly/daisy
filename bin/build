@@ -97,7 +97,7 @@ fi
 
 cd $DAISY_PATH
 echo "Stopping all running containers."
-./bin/stop
+docker compose down
 . $DAISY_PATH/.env
 docker compose build
 
