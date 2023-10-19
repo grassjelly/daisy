@@ -2,6 +2,11 @@
 
 set -e
 
+if [[ $1 == "-1" ]]; then
+  tmux kill-session
+  exit 0
+fi
+
 TOTAL_PANE="${1:-4}"
 
 if [ ! -x "$(command -v tmuxinator)" ]; then
@@ -24,4 +29,5 @@ for ((n=0;n<$TOTAL_PANE;n++))
   do echo "        -" >> $DAISY_PATH/.tmux.yaml
 done
 
+echo "   - tmux: tmux set -g mouse on && exit" >> $DAISY_PATH/.tmux.yaml 
 tmuxinator start -p .tmux.yaml
