@@ -67,8 +67,8 @@ if [ ! -d "$ROS2_WS_MOUNT/src" ]; then
     NO_SRC=true
 fi
 
-if [ -f "$ROS2_WS_MOUNT/install.repos" && "$NO_SRC" == "true" ]; then
-    if [[ -z $(vcs -h) ]]; then
+if [[ -f "$ROS2_WS_MOUNT/install.repos" && "$NO_SRC" == "true" ]]; then
+    if [ ! -x "$(command -v vcs)" ]; then
         echo "Installing VCS Tool for exporting dependencies."
         curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
         sudo apt update -y
@@ -124,4 +124,3 @@ sudo rm -rf $ROS2_WS_MOUNT/log
 
 echo ""
 echo $(ls $ROS2_WS_MOUNT)
-
