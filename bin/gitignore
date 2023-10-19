@@ -8,7 +8,7 @@ if ! grep -qF "$IGNORE" "$ROS2_WS_MOUNT/.gitignore" ; then
   fi
 }
 
-IGNORE_ITEMS=("/build" "/log" "/install" ".last_build_errors", "daisy/tmux.yaml")
+IGNORE_ITEMS=("/build" "/log" "/install" ".last_build_errors", "daisy/.tmux.yaml")
 for IGNORE in "${IGNORE_ITEMS[@]}"; do
     write_to_ignore
 done
@@ -16,4 +16,3 @@ done
 rm -rf $DAISY_PATH/.git
 echo ".gitignore added to $ROS2_WS_MOUNT."
 echo "You can now use git in your workspace (eg. git init)."
-
