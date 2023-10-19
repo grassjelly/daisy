@@ -21,7 +21,7 @@ windows:
 EOF
 
 for ((n=0;n<$TOTAL_PANE;n++))
-  do echo "        -" >> $DAISY_PATH/tmux.yaml
+  do echo "        -" >> $DAISY_PATH/.tmux.yaml
 done
 
-tmuxinator start -p tmux.yaml
+tmuxinator start -p .tmux.yaml
