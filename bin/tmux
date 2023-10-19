@@ -12,7 +12,7 @@ fi
 cd $DAISY_PATH
 . $DAISY_PATH/.env
 
-cat << EOF > $DAISY_PATH/tmux.yaml
+cat << EOF > $DAISY_PATH/.tmux.yaml
 name: daisy
 windows:
    - main:
