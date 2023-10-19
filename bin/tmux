@@ -20,6 +20,7 @@ cd $DAISY_PATH
 cat << EOF > $DAISY_PATH/.tmux.yaml
 name: daisy
 windows:
+   - tmux: tmux set -g mouse on && exit
    - main:
       layout: d9da,208x60,0,0[208x26,0,0{104x26,0,0,0,103x26,105,0,5},208x33,0,27{104x33,0,27,1,103x33,105,27,4}]] @0
       panes:
@@ -29,5 +30,4 @@ for ((n=0;n<$TOTAL_PANE;n++))
   do echo "        -" >> $DAISY_PATH/.tmux.yaml
 done
 
-echo "   - tmux: tmux set -g mouse on && exit" >> $DAISY_PATH/.tmux.yaml 
 tmuxinator start -p .tmux.yaml
