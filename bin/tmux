@@ -1,33 +1,52 @@
 #!/usr/bin/env bash
-
 set -e
 
-if [[ $1 == "-1" ]]; then
-  tmux kill-session
-  exit 0
-fi
-
-TOTAL_PANE="${1:-4}"
-
-if [ ! -x "$(command -v tmuxinator)" ]; then
-    echo "Installing tmuxinator"
-    sudo apt install -y tmuxinator
-fi
+MAX_PANE=20
 
 cd $DAISY_PATH
 . $DAISY_PATH/.env
 
-cat << EOF > $DAISY_PATH/.tmux.yaml
-name: daisy
-windows:
-   - tmux: tmux set -g mouse on && exit
-   - main:
-      layout: d9da,208x60,0,0[208x26,0,0{104x26,0,0,0,103x26,105,0,5},208x33,0,27{104x33,0,27,1,103x33,105,27,4}]] @0
-      panes:
+if [[ $1 == "-1" ]]; then
+  tmux kill-session -t daisy-$ROS2_WS_CONTAINER_NAME
+  exit 0
+fi
+
+if [ -z $1 ]; then
+  TOTAL_PANE=4
+else
+  TOTAL_PANE=$1
+fi
+
+if [ ! -x "$(command -v tmuxinator)" ]; then
+  echo "Installing tmuxinator"
+  sudo apt install -y tmuxinator
+fi
+
+if [[ $TOTAL_PANE == ?(-)+([0-9]) ]]; then
+  if [ $TOTAL_PANE -gt $MAX_PANE ]; then
+    NEW_PANES=$MAX_PANE
+  else
+    NEW_PANES=$TOTAL_PANE
+  fi
+
+  cat << EOF > $DAISY_PATH/.tmux.yaml
+  name: daisy-$ROS2_WS_CONTAINER_NAME
+  tmux_options: -f .tmux.conf
+  windows:
+    - main:
+        panes:
 EOF
 
-for ((n=0;n<$TOTAL_PANE;n++))
-  do echo "        -" >> $DAISY_PATH/.tmux.yaml
-done
+  for ((n=0;n<$NEW_PANES;n++))
+    do echo "        -" >> $DAISY_PATH/.tmux.yaml
+  done
+  tmuxinator start -p .tmux.yaml
 
-tmuxinator start -p .tmux.yaml
+else
+  TMUX_FILE="$1.yaml"
+  if [ -f $TMUX_FILE ]; then
+    tmuxinator start -p "$1.yaml"
+  else
+    echo "No $TMUX_FILE found"
+  fi
+fi
