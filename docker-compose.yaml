@@ -8,8 +8,7 @@ services:
       args:
         - USE_ROS_DISTRO=${USE_ROS_DISTRO}
         - ROS2_WS_CONTAINER_NAME=${ROS2_WS_CONTAINER_NAME}
-        - UID=${UID:-1000}
-        - GID=${UID:-1000}
+        - U_ID=${U_ID:-$UID}
         - USERNAME=${USERNAME:-daisy}
       target: base
 
@@ -35,6 +34,10 @@ services:
   rviz:
     extends: dev
     command: rviz2
+
+  debug:
+    extends: dev
+    command: sleep infinity
 
   colcon-build:
     container_name: colcon-build
