@@ -3,14 +3,6 @@ ARG USE_ROS_DISTRO=
 FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base as base
 SHELL ["/bin/bash", "-c"]
 
-# Add a user name for development
-ARG ROS2_WS_CONTAINER_NAME=
-ARG USERNAME=ubuntu
-ARG UID=1000
-ARG GID=1000
-ENV HOME=/home/${USERNAME}
-ENV ROS2_WS=/home/${USERNAME}/${ROS2_WS_CONTAINER_NAME}
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
         udev \
         sudo \
@@ -19,8 +11,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ros-${ROS_DISTRO}-foxglove-bridge \
     && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd --gid ${GID} ${USERNAME} \
-    && useradd --uid ${UID} --gid ${GID}  --shell /bin/bash --create-home  -m ${USERNAME} \
+# Add a user name for development
+ARG ROS2_WS_CONTAINER_NAME=
+ARG USERNAME=daisy
+ARG U_ID=${U_ID}
+ENV G_ID=${U_ID}
+ENV HOME=/home/${USERNAME}
+ENV ROS2_WS=/home/${USERNAME}/${ROS2_WS_CONTAINER_NAME}
+
+RUN groupadd --gid ${G_ID} ${USERNAME} \
+    && useradd --uid ${U_ID} --gid ${G_ID} --shell /bin/bash --create-home  -m ${USERNAME} \
     && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME} \
     && adduser ${USERNAME} video && adduser ${USERNAME} plugdev && adduser ${USERNAME} sudo
@@ -31,22 +31,22 @@ RUN cp /root/.bashrc ${HOME}/.bashrc
 RUN echo "export USER=${USERNAME}" >> ${HOME}/.bashrc
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ${HOME}/.bashrc
 RUN echo "sleep 0.5" >> ${HOME}/.bashrc
-RUN echo "if [[ \"\$(wc -w < ${ROS2_WS}/.last_build_errors)\" == \"0\" ]]; then" >> ${HOME}/.bashrc
+RUN echo "if [[ \"\$(wc -w < ${ROS2_WS}/.last_build_errors)\" == \"0\" && -d \"${ROS2_WS}/install\" ]]; then" >> ${HOME}/.bashrc
 RUN echo "    source ${ROS2_WS}/install/setup.bash" >> ${HOME}/.bashrc
 RUN echo "fi" >> ${HOME}/.bashrc
 
 # Set workspace name and ROS_DISTRO on entrypoint
 COPY daisy/entrypoint.sh /
-RUN sed -i "s/rosdistro/${ROS_DISTRO}/" /entrypoint.sh
-RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/" /entrypoint.sh
-RUN sed -i "s/username/${USERNAME}/" /entrypoint.sh
+RUN sed -i "s/rosdistro/${ROS_DISTRO}/g" /entrypoint.sh
+RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/g" /entrypoint.sh
+RUN sed -i "s/username/${USERNAME}/g" /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Install Distro specific components
 COPY daisy/custom_distro_install.sh /
-RUN sed -i "s/rosdistro/${ROS_DISTRO}/" /custom_distro_install.sh
-RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/" /custom_distro_install.sh
-RUN sed -i "s/username/${USERNAME}/" /custom_distro_install.sh
+RUN sed -i "s/rosdistro/${ROS_DISTRO}/g" /custom_distro_install.sh
+RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/g" /custom_distro_install.sh
+RUN sed -i "s/username/${USERNAME}/g" /custom_distro_install.sh
 RUN chmod +x /custom_distro_install.sh
 RUN /custom_distro_install.sh
 
@@ -63,9 +63,8 @@ RUN rosdep install --rosdistro=${ROS_DISTRO} --from-paths src -iry --os=ubuntu:$
 # We're only pre-installing the dependencies and not building within the container
 # Let users build it
 RUN rm -rf ${ROS2_WS}/src/*
+RUN chown -R ${USERNAME}:${USERNAME} ${HOME}
 
-RUN sudo chown -R ${USERNAME}:${USERNAME} $HOME
-USER ${USERNAME}
 ENTRYPOINT ["/entrypoint.sh"]
 
 FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04 as novnc
