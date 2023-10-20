@@ -20,7 +20,7 @@ ENV HOME=/home/${USERNAME}
 ENV ROS2_WS=/home/${USERNAME}/${ROS2_WS_CONTAINER_NAME}
 
 RUN groupadd --gid ${G_ID} ${USERNAME} \
-    && useradd --uid ${U_ID} --gid ${G_ID} --shell /bin/bash --create-home  -m ${USERNAME} \
+    && useradd -l --uid ${U_ID} --gid ${G_ID} --shell /bin/bash --create-home  -m ${USERNAME} \
     && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME} \
     && adduser ${USERNAME} video && adduser ${USERNAME} plugdev && adduser ${USERNAME} sudo
@@ -56,14 +56,15 @@ COPY src ${ROS2_WS}/src
 
 # Install dependencies  of the packages found in src
 WORKDIR ${ROS2_WS}
-RUN apt-get update
-RUN rosdep update --rosdistro=${ROS_DISTRO}
-RUN rosdep install --rosdistro=${ROS_DISTRO} --from-paths src -iry --os=ubuntu:$(lsb_release --codename | cut -f2)
+RUN apt-get update \
+        && rosdep update --rosdistro=${ROS_DISTRO} \
+        && rosdep install --rosdistro=${ROS_DISTRO} --from-paths src -iry --os=ubuntu:$(lsb_release --codename | cut -f2) \
+    && rm -rf /var/lib/apt/lists/*
 
 # We're only pre-installing the dependencies and not building within the container
 # Let users build it
 RUN rm -rf ${ROS2_WS}/src/*
-RUN chown -R ${USERNAME}:${USERNAME} ${HOME}
+RUN chown -R ${U_ID}:${G_ID} ${HOME}
 
 ENTRYPOINT ["/entrypoint.sh"]
 
