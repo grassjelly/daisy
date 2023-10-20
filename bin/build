@@ -96,9 +96,10 @@ if [ ! -z "$1"  ]; then
 fi
 
 cd $DAISY_PATH
-echo "Stopping all running containers."
-docker compose down
 . $DAISY_PATH/.env
+echo "Stopping all running containers."
+export U_ID=$(id -u)
+docker compose down
 docker compose build
 
 echo ""
