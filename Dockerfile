@@ -68,8 +68,8 @@ RUN chown -R ${U_ID}:${G_ID} ${HOME}
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04 as novnc
-# FROM nvidia/opengl:1.0-glvnd-runtime
+# FROM nvidia/cuda:12.2.2-runtime-ubuntu22.04 as novnc
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu22.04 as novnc
 ARG SOURCEFORGE=https://sourceforge.net/projects
 ARG WEBSOCKIFY_VERSION=0.11.0
 ARG NOVNC_VERSION=1.4.0
@@ -84,6 +84,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-numpy \
         tigervnc-scraping-server \
         fluxbox\
+        xorg \
+        wget \
+        mesa-utils \
+        libegl1-mesa \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://github.com/novnc/noVNC/archive/v${NOVNC_VERSION}.tar.gz | tar -xzf - -C /opt \
@@ -98,9 +102,16 @@ RUN ln -s /opt/noVNC/vnc.html /opt/noVNC/index.html
 
 RUN openssl req -new -x509 -days 365 -nodes -out self.pem -keyout /root/vnc.pem -batch
 
+RUN echo "Section \"Device\"" > /etc/X11/xorg.conf 
+RUN echo "    Identifier     \"Device0\"" >> /etc/X11/xorg.conf 
+RUN echo "    Driver         \"nvidia\"" >> /etc/X11/xorg.conf 
+RUN echo "    VendorName     \"NVIDIA Corporation\"" >> /etc/X11/xorg.conf 
+RUN echo "EndSection" >> /etc/X11/xorg.conf 
+
 RUN echo "#!/bin/bash" > /root/entrypoint.sh
 RUN echo "Xorg :200 &" >> /root/entrypoint.sh
-RUN echo "exec startfluxbox" >> /root/entrypoint.sh
+RUN echo "sleep 5" >> /root/entrypoint.sh
+RUN echo "fluxbox -display :200 &" >> /root/entrypoint.sh
 RUN echo "x0vncserver :200 -localhost no -fg -Geometry 1920x1080 -rfbport 6100 -SecurityTypes None --I-KNOW-THIS-IS-INSECURE &" >> /root/entrypoint.sh
 RUN echo "/opt/noVNC/utils/novnc_proxy --vnc localhost:6100 --cert /root/vnc.pem --listen 40001" >> /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
