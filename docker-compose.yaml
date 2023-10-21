@@ -60,7 +60,7 @@ services:
     volumes:
       - ./daisy/foxglove-layout.json:/foxglove/default-layout.json
 
-  novnc:
+  novnc-gpu:
     extends: base
     runtime: nvidia
     container_name: novnc
@@ -71,10 +71,15 @@ services:
       context: ../
       dockerfile: daisy/Dockerfile
       target: novnc
-    # hostname: ${HOSTNAME}
     pid: host
     network_mode: host
     privileged: true
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/root/.Xauthority
+      - /usr/lib/xorg/modules/drivers/nvidia_drv.so:/usr/lib/xorg/modules/drivers/nvidia_drv.so
+      - /usr/lib/xorg/modules/extensions/libglx.so:/usr/lib/xorg/modules/extensions/libglx.so
+      - /usr/lib/xorg/modules/extensions/libglxserver_nvidia.so.${NVIDIA_DRIVER}:/usr/lib/xorg/modules/extensions/libglxserver_nvidia.so
+      - /usr/lib/x86_64-linux-gnu/libnvidia-tls.so.${NVIDIA_DRIVER}:/usr/lib/x86_64-linux-gnu/libnvidia-tls.so.${NVIDIA_DRIVER}
+      - /usr/lib/x86_64-linux-gnu/libGL*.so*:/usr/lib/x86_64-linux-gnu/libGL*.so*
+      - /usr/lib/x86_64-linux-gnu/libnvidia*.so*:/usr/lib/x86_64-linux-gnu/libnvidia*.so*
