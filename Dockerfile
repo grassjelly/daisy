@@ -107,6 +107,13 @@ RUN echo "    Identifier     \"Device0\"" >> /etc/X11/xorg.conf
 RUN echo "    Driver         \"nvidia\"" >> /etc/X11/xorg.conf 
 RUN echo "    VendorName     \"NVIDIA Corporation\"" >> /etc/X11/xorg.conf 
 RUN echo "EndSection" >> /etc/X11/xorg.conf 
+RUN echo "Section \"Screen\""  >> /etc/X11/xorg.conf 
+RUN echo "    Identifier     \"Screen0\"" >> /etc/X11/xorg.conf 
+RUN echo "    Subsection     \"Display\"" >> /etc/X11/xorg.conf 
+RUN echo "        Depth    24" >> /etc/X11/xorg.conf 
+RUN echo "        Modes    \"1920x1080\"" >> /etc/X11/xorg.conf 
+RUN echo "    EndSubsection" >> /etc/X11/xorg.conf 
+RUN echo "EndSection" >> /etc/X11/xorg.conf 
 
 RUN echo "#!/bin/bash" > /root/entrypoint.sh
 RUN echo "Xorg :200 &" >> /root/entrypoint.sh
