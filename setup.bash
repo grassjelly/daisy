@@ -4,6 +4,10 @@ export DOCKER_FILES_PATH="$SCRIPT_DIR/daisy/custom"
 export ROS2_WS_MOUNT="$SCRIPT_DIR"
 export ROS2_WS_CONTAINER_NAME="$(basename $ROS2_WS_MOUNT)"
 export DAISY_PATH=$ROS2_WS_MOUNT/daisy
+export U_ID=$(id -u)
+if [ -d "/sys/module/nvidia" ]; then
+    export NVIDIA_DRIVER=$(cat /sys/module/nvidia/version)
+fi
 . $DAISY_PATH/.env
 alias daisy-build="$DAISY_PATH/bin/./build"
 alias daisy-exec="$DAISY_PATH/bin/./exec"
