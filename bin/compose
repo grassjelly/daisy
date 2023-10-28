@@ -3,7 +3,7 @@
 set -e
 
 REMOTE_DISPLAY=${DISPLAY%:*}
-if [[ -z "$REMOTE_DISPLAY" && ! -z "$DISPLAY" && "$DISPLAY" -ne ":200" ]]; then
+if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY && "$DISPLAY" != ":200" ]]; then
     xhost +
 fi
 
