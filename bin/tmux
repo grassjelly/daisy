@@ -24,6 +24,7 @@ fi
 
 if [ ! -x "$(command -v tmuxinator)" ]; then
   echo "Installing tmuxinator"
+  sudo apt update
   sudo apt install -y tmuxinator
 fi
 
