@@ -1,5 +1,10 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 SCRIPT_DIR=$(dirname $SCRIPT_DIR)
+export DOCKER_FILES_PATH="$SCRIPT_DIR/daisy/custom"
+export ROS2_WS_MOUNT="$SCRIPT_DIR"
+export ROS2_WS_CONTAINER_NAME="$(basename $ROS2_WS_MOUNT)"
+export DAISY_PATH=$ROS2_WS_MOUNT/daisy
+
 . $DAISY_PATH/.env
 
 FOXY_UBUNTU=18.04
@@ -20,10 +25,6 @@ NVIDIA_RUNTIME_FALSE=""
 DOCKER_RUNTIME="NVIDIA_RUNTIME_${ENABLE_GPU^^}"
 export DOCKER_RUNTIME=${!DOCKER_RUNTIME}
 
-export DOCKER_FILES_PATH="$SCRIPT_DIR/daisy/custom"
-export ROS2_WS_MOUNT="$SCRIPT_DIR"
-export ROS2_WS_CONTAINER_NAME="$(basename $ROS2_WS_MOUNT)"
-export DAISY_PATH=$ROS2_WS_MOUNT/daisy
 export U_ID=$(id -u)
 alias daisy-build="$DAISY_PATH/bin/./build"
 alias daisy-exec="$DAISY_PATH/bin/./exec"
