@@ -96,7 +96,7 @@ if [ ! -z "$1"  ]; then
 fi
 
 cd $DAISY_PATH
-. $DAISY_PATH/.env
+. setup.bash
 echo "Stopping all running containers."
 docker compose down
 docker compose build
