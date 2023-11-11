@@ -35,7 +35,7 @@ services:
       - $ROS2_WS_MOUNT:/home/${USERNAME}/$ROS2_WS_CONTAINER_NAME
       - /tmp:/tmp
     devices:
-      - /dev/dri:/dev/dri
+      - /dev:/dev
 
   rviz:
     container_name: rviz
