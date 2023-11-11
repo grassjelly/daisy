@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd $DAISY_PATH
+. setup.bash
+
+REMOTE_DISPLAY=${DISPLAY%:*}
+if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY && "$DISPLAY" != ":200" ]]; then
+    xhost +
+fi
+
+if [ -z $(docker compose ps -q debug) ]; then
+    docker compose up debug -d --force-recreate
+fi
+
+if [[ ! -z "$@" ]]; then
+    if [[ "$(wc -w < $ROS2_WS_MOUNT/.last_build_errors)" == "0" ]]; then
+        COMMAND="source /home/$USERNAME/$ROS2_WS_CONTAINER_NAME/install/setup.bash ; $@"
+    else
+        COMMAND="source /opt/ros/$USE_ROS_DISTRO/setup.bash ; $@"
+    fi
+    docker compose exec debug /bin/bash -c "$COMMAND"
+
+else
+    docker compose exec debug /bin/bash
+fi

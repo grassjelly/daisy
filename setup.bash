@@ -35,4 +35,5 @@ alias daisy-gitignore="$DAISY_PATH/bin/./gitignore"
 alias daisy-template="$DAISY_PATH/bin/./template"
 alias daisy-export="$DAISY_PATH/bin/./export"
 alias daisy-tmux="$DAISY_PATH/bin/./tmux"
+alias daisy-shell="DAISY_PATH/bin/./shell"
 unset ROS_DISTRO
