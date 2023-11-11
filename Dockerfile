@@ -100,6 +100,10 @@ COPY daisy/entrypoint.sh /
 RUN sed -i "s/rosdistro/${ROS_DISTRO}/g" /entrypoint.sh
 RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/g" /entrypoint.sh
 RUN sed -i "s/username/${USERNAME}/g" /entrypoint.sh
+ARG GPU_BASE=
+RUN if [ ${GPU_BASE} == "gpu" ]; then \
+        sed -i 's/\$\@/vglrun +v -d \/dev\/dri\/card0 \$@/' /entrypoint.sh; \
+    fi
 RUN chmod +x /entrypoint.sh
 
 # Install Distro specific components
