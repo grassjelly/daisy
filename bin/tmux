@@ -4,7 +4,7 @@ set -e
 MAX_PANE=20
 
 cd $DAISY_PATH
-. $DAISY_PATH/.env
+. setup.bash
 
 if [[ $1 == "-1" ]]; then
   tmux kill-session -t daisy-$ROS2_WS_CONTAINER_NAME
