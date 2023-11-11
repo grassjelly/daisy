@@ -13,4 +13,8 @@ if [ "$ROS_DISTRO" == "humble" ]; then
     export FASTRTPS_DEFAULT_PROFILES_FILE=/.shm_off.xml
 fi
 
-$@
+if [ -d "/sys/module/nvidia" ]; then
+    vglrun +v -d /dev/dri/card0 "$@"
+else
+    $@
+fi
