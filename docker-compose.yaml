@@ -6,14 +6,16 @@ services:
       context: ../
       dockerfile: daisy/Dockerfile
       args:
+        - GPU_BASE=${GPU_BASE}
+        - UBUNTU_VER=${UBUNTU_VER}
         - USE_ROS_DISTRO=${USE_ROS_DISTRO}
         - ROS2_WS_CONTAINER_NAME=${ROS2_WS_CONTAINER_NAME}
-        - U_ID=${U_ID:-$UID}
+        - U_ID=${U_ID}
         - USERNAME=${USERNAME:-daisy}
       target: base
 
   dev:
-    hostname: ${ROS2_WS_CONTAINER_NAME}_${USE_ROS_DISTRO}
+    runtime: ${DOCKER_RUNTIME}
     image: ${ROS2_WS_CONTAINER_NAME}-${USE_ROS_DISTRO}
     stdin_open: true
     tty: true
@@ -26,16 +28,22 @@ services:
       - DISPLAY=${DISPLAY:-}
       - QT_X11_NO_MITSHM=1
     volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/home/${USERNAME}/.Xauthority
       - $ROS2_WS_MOUNT:/home/${USERNAME}/$ROS2_WS_CONTAINER_NAME
       - /tmp:/tmp
+    devices:
+      - /dev/dri:/dev/dri
 
   rviz:
+    container_name: rviz
     extends: dev
     command: rviz2
 
   debug:
+    container_name: debug
     extends: dev
     command: sleep infinity
 
@@ -44,42 +52,17 @@ services:
     extends: dev
     command: colcon build
 
-  websocket-bridge:
-    container_name: websocket-bridge
-    extends: dev
-    command: ros2 launch foxglove_bridge foxglove_bridge_launch.xml
-  
-  foxglove:
-    container_name: foxglove
-    pid: host
-    depends_on: 
-      - websocket-bridge
-    image: ghcr.io/foxglove/studio:latest
-    ports:
-      - "6060:8080"
-    volumes:
-      - ./daisy/foxglove-layout.json:/foxglove/default-layout.json
-
-  novnc-gpu:
-    extends: base
-    runtime: nvidia
-    container_name: novnc
-    image: novnc
-    env_file:
-      - .env
-    build:
-      context: ../
-      dockerfile: daisy/Dockerfile
-      target: novnc
-    pid: host
-    network_mode: host
+  kasmvnc:
+    runtime: ${DOCKER_RUNTIME}
+    container_name: kasmvnc
+    image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
     privileged: true
+    ports:
+      - 3000:3000
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/root/.Xauthority
-      - /usr/lib/xorg/modules/drivers/nvidia_drv.so:/usr/lib/xorg/modules/drivers/nvidia_drv.so
-      - /usr/lib/xorg/modules/extensions/libglx.so:/usr/lib/xorg/modules/extensions/libglx.so
-      - /usr/lib/xorg/modules/extensions/libglxserver_nvidia.so.${NVIDIA_DRIVER}:/usr/lib/xorg/modules/extensions/libglxserver_nvidia.so
-      - /usr/lib/x86_64-linux-gnu/libnvidia-tls.so.${NVIDIA_DRIVER}:/usr/lib/x86_64-linux-gnu/libnvidia-tls.so.${NVIDIA_DRIVER}
-      - /usr/lib/x86_64-linux-gnu/libGL*.so*:/usr/lib/x86_64-linux-gnu/libGL*.so*
-      - /usr/lib/x86_64-linux-gnu/libnvidia*.so*:/usr/lib/x86_64-linux-gnu/libnvidia*.so*
+    environment:
+      - DISPLAY=:200
+    devices:
+      - /dev/dri:/dev/dri
