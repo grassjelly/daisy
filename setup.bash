@@ -27,13 +27,10 @@ export DOCKER_RUNTIME=${!DOCKER_RUNTIME}
 
 export U_ID=$(id -u)
 alias daisy-build="$DAISY_PATH/bin/./build"
-alias daisy-exec="$DAISY_PATH/bin/./exec"
 alias daisy-compose="$DAISY_PATH/bin/./compose"
-alias daisy-shell="$DAISY_PATH/bin/./shell"
-alias daisy-stop="$DAISY_PATH/bin/./stop"
-alias daisy-gitignore="$DAISY_PATH/bin/./gitignore"
-alias daisy-template="$DAISY_PATH/bin/./template"
 alias daisy-export="$DAISY_PATH/bin/./export"
+alias daisy-gitignore="$DAISY_PATH/bin/./gitignore"
+alias daisy-shell="$DAISY_PATH/bin/./shell"
+alias daisy-template="$DAISY_PATH/bin/./template"
 alias daisy-tmux="$DAISY_PATH/bin/./tmux"
-alias daisy-shell="DAISY_PATH/bin/./shell"
 unset ROS_DISTRO
