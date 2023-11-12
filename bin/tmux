@@ -7,7 +7,7 @@ cd $DAISY_PATH
 . setup.bash
 
 if [[ $1 == "-1" ]]; then
-  tmux kill-session -t daisy-$ROS2_WS_CONTAINER_NAME
+  tmux kill-session -t daisy_$ROS2_WS_CONTAINER_NAME
   exit 0
 fi
 
@@ -36,7 +36,7 @@ if [[ $TOTAL_PANE == ?(-)+([0-9]) ]]; then
   fi
 
   cat << EOF > $DAISY_PATH/.tmux.yaml
-  name: daisy-$ROS2_WS_CONTAINER_NAME
+  name: daisy_$ROS2_WS_CONTAINER_NAME
   on_project_exit: cd $DAISY_PATH && docker compose down
   tmux_options: -f .tmux.conf
   windows:
