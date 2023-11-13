@@ -1,10 +1,10 @@
 ARG USE_ROS_DISTRO=
 ARG UBUNTU_VER=
-ARG GPU_BASE=
+ARG RUNTIME=
 
 FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base as ros2
 
-FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu${UBUNTU_VER} as ros2gpu
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu${UBUNTU_VER} as ros2nvidia
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -61,7 +61,7 @@ RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash
 RUN rosdep init 
 ENV ROS_DISTRO=${USE_ROS_DISTRO}
 
-FROM ros2${GPU_BASE} as base
+FROM ros2${RUNTIME} as base
 SHELL ["/bin/bash", "-c"]
 
 # Add a user name for development
@@ -100,8 +100,8 @@ COPY daisy/entrypoint.sh /
 RUN sed -i "s/rosdistro/${ROS_DISTRO}/g" /entrypoint.sh
 RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/g" /entrypoint.sh
 RUN sed -i "s/username/${USERNAME}/g" /entrypoint.sh
-ARG GPU_BASE=
-RUN if [ ${GPU_BASE} == "gpu" ]; then \
+ARG RUNTIME=
+RUN if [ ${RUNTIME} == "nvidia" ]; then \
         sed -i 's/\$\@/vglrun +v -d \/dev\/dri\/card0 \$@/' /entrypoint.sh; \
     fi
 RUN chmod +x /entrypoint.sh
