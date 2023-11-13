@@ -14,17 +14,6 @@ IRON_UBUNTU=22.04
 UBUNTU_VER="${USE_ROS_DISTRO^^}_UBUNTU"
 export UBUNTU_VER=${!UBUNTU_VER}
 
-GPU_TRUE="gpu"
-GPU_FALSE=""
-GPU_=""
-GPU_BASE="GPU_${ENABLE_GPU^^}"
-export GPU_BASE=${!GPU_BASE}
-
-NVIDIA_RUNTIME_TRUE="nvidia"
-NVIDIA_RUNTIME_FALSE=""
-DOCKER_RUNTIME="NVIDIA_RUNTIME_${ENABLE_GPU^^}"
-export DOCKER_RUNTIME=${!DOCKER_RUNTIME}
-
 export U_ID=$(id -u)
 alias daisy-build="$DAISY_PATH/bin/./build"
 alias daisy-compose="$DAISY_PATH/bin/./compose"
