@@ -1,9 +1,6 @@
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-SCRIPT_DIR=$(dirname $SCRIPT_DIR)
-export DOCKER_FILES_PATH="$SCRIPT_DIR/daisy/custom"
-export ROS2_WS_MOUNT="$SCRIPT_DIR"
+export DAISY_PATH="$( cd $(dirname $BASH_SOURCE) ; pwd -P )"
+export ROS2_WS_MOUNT="$(dirname $DAISY_PATH)"
 export ROS2_WS_CONTAINER_NAME="$(basename $ROS2_WS_MOUNT)"
-export DAISY_PATH=$ROS2_WS_MOUNT/daisy
 
 . $DAISY_PATH/.env
 
