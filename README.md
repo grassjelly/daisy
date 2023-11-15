@@ -13,7 +13,8 @@ A huge thanks to Sebastian Castro for this [blog post](https://roboticseabass.co
 | COMMAND           | ARGUMENTS                    | DESCRIPTION                                             |
 |-------------------|------------------------------|---------------------------------------------------------|
 | `daisy-build`     |<foxy, galactic, humble, iron>| Build the workspace's Docker image.                     |
-| `daisy-compose`   |<docker compose args>         | Similar to docker-compose. But can be run anywhere      |
+| `daisy-compose`   |<docker_compose_args>         | Similar to docker-compose. But can be run anywhere.     |
+| `daisy-shell`     |<bash_commands>               | Run bash commands from host or log-in inside container. |
 | `daisy-gitignore` |                              | Add _build_ _install_ _log_ to .gitignore of workspace. |
 | `daisy-template`  |src/my_package                | Add docker template to ROS2 package.                    |
 | `daisy-export`    |                              | Record all local repositories found in src.             |
@@ -68,6 +69,15 @@ is similar to:
 cd /home/my_ros2_ws/daisy #docker-compose.yaml directory
 docker compose up my_service
 ```
+
+#### 2.2 Debugging tool
+You can use `daisy-shell`, to spawn a container and run bash commands inside the container from the host. For example:
+```
+daisy-shell ros2 topic list
+```
+This will return all the topics available within the network.
+
+If no bash command is provided, it will log-in the debug container and use it like a normal shell.
 
 ### 3. Dockerizing ROS2 workspaces and ROS2 packages
 
