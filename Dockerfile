@@ -61,7 +61,7 @@ RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash
 RUN rosdep init 
 ENV ROS_DISTRO=${USE_ROS_DISTRO}
 
-FROM ros2${RUNTIME} as base
+FROM ros2${RUNTIME} as workspace
 SHELL ["/bin/bash", "-c"]
 
 # Add a user name for development
@@ -130,4 +130,9 @@ RUN apt-get update \
 RUN rm -rf ${ROS2_WS}/src/*
 RUN mkdir -p ${HOME}/maps
 RUN chown -R ${U_ID}:${G_ID} ${HOME}
+USER ${HOME}
+
+FROM workspace as base
+## ADD custom install here
+
 ENTRYPOINT ["/entrypoint.sh"]
