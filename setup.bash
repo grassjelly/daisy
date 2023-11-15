@@ -1,4 +1,4 @@
-export DAISY_PATH="$( cd $(dirname $BASH_SOURCE) ; pwd -P )"
+export DAISY_PATH="$(cd $(dirname $BASH_SOURCE) ; pwd -P )"
 export ROS2_WS_MOUNT="$(dirname $DAISY_PATH)"
 export ROS2_WS_CONTAINER_NAME="$(basename $ROS2_WS_MOUNT)"
 
