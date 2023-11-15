@@ -81,7 +81,7 @@ if [[ -f "$ROS2_WS_MOUNT/install.repos" && "$NO_SRC" == "true" ]]; then
     echo ""
     echo "in $ROS2_WS_MOUNT/src"
     echo ""
-    vcs import $ROS2_WS_MOUNT/src --skip-existing --input $ROS2_WS_MOUNT/install.repos --recursive
+    vcs import $ROS2_WS_MOUNT/src --skip-existing --input $ROS2_WS_MOUNT/install.repos --recursive --workers 1
 fi
 
 if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
