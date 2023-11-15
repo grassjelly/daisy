@@ -54,7 +54,7 @@ services:
     command: colcon build
 
   kasmvnc:
-    runtime: ${DOCKER_RUNTIME}
+    runtime: ${RUNTIME}
     container_name: kasmvnc
     image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
     privileged: true
