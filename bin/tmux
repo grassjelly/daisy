@@ -37,7 +37,12 @@ if [[ $TOTAL_PANE == ?(-)+([0-9]) ]]; then
 
   cat << EOF > $DAISY_PATH/.tmux.yaml
   name: daisy_$ROS2_WS_CONTAINER_NAME
-  on_project_exit: cd $DAISY_PATH && docker compose down
+  on_project_start: 
+    - #do some stuff here
+  pre_window: 
+    - source $DAISY_PATH/setup.bash && clear
+  on_project_exit: 
+    - cd $DAISY_PATH && docker compose down
   tmux_options: -f .tmux.conf
   windows:
     - main:
