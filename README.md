@@ -12,7 +12,7 @@ A huge thanks to Sebastian Castro for this [blog post](https://roboticseabass.co
 
 | COMMAND           | ARGUMENTS                    | DESCRIPTION                                             |
 |-------------------|------------------------------|---------------------------------------------------------|
-| `daisy-build`     |<foxy, galactic, humble, iron>| Build the workspace's Docker image.                     |
+| `daisy-build`     |-h                            | Build the workspace's Docker image.                     |
 | `daisy-compose`   |<docker_compose_args>         | Similar to docker-compose. But can be run anywhere.     |
 | `daisy-shell`     |<bash_commands>               | Run bash commands from host or log-in inside container. |
 | `daisy-gitignore` |                              | Add _build_ _install_ _log_ to .gitignore of workspace. |
