@@ -21,53 +21,87 @@ echo '''
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠷⣟⡿⠽⠋⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 '''
-
-if [[ -z $1 && -z $USE_ROS_DISTRO ]]; then
-    echo "No ROS2 distro provided. Exiting now!"
-    echo "usage: daisy-build [foxy, galactic, humble, iron]"
-    exit 1
-fi
-
 SUPPORTED_DISTRO=( foxy galactic humble iron  )
-if [[ ! " ${SUPPORTED_DISTRO[*]} " =~ " $1 " && -z $USE_ROS_DISTRO ]]; then
-    echo "Unsupported $1 distro. Exiting now!"
-    exit 1
-fi
 
-if [ -z $1 ]; then
-    echo "Building Docker image for ROS2 $USE_ROS_DISTRO."
-else
-    echo "Building Docker image for ROS2 $1."
-fi
-echo ""
+NO_CACHE=
+INPUT_ROS_DISTRO=
+SKIP_IMPORT=false
+DEL_BUILD_DIR=false
 
-echo "This will stop all running containers. Do you want to continue?"
-echo -n "Yes [y] or No [n]: " 
-read reply
-if [[ "$reply" == "n" || "$reply" == "N" ]]; then
-    echo ""
-    exit 1
-fi
+usage() {
+  echo "Usage: daisy-build <arguments>"
+  echo "  --ros-distro DISTRO ROS distro to install"
+  echo "  --no-cache          Run docker compose build with --no-cache flag"
+  echo "  --skip-import       Skip installing repositories found in install.repos"
+  echo "  --del-build-dir     Delete colcon build directories (build install log)"
+  exit 1
+}
 
-if [[ ! -z $1 && $USE_ROS_DISTRO != $1 && -f "$ROS2_WS_MOUNT/install.repos"  ]]; then
-    echo "A rosinstall file has been detected in your workspace using ROS2 $USE_ROS_DISTRO."
-    echo "Building your workspace using ROS2 $1 might cause compatibility issues."
-    echo "Do you want to continue?"
-    echo -n "Yes [y] or No [n]: " 
-    read reply
-    if [[ "$reply" == "n" || "$reply" == "N" ]]; then
-        echo "Exiting now!"
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+    --rosdistro)
+        shift
+        if [[ $# -gt 0 ]]; then
+            INPUT_ROS_DISTRO="$1"
+            if [[ ! " ${SUPPORTED_DISTRO[*]} " =~ " $INPUT_ROS_DISTRO " ]]; then
+                echo "Unsupported $INPUT_ROS_DISTRO distro. Exiting now!"
+                exit 1
+            fi
+
+            if [[ ! -z $INPUT_ROS_DISTRO && ! -z $USE_ROS_DISTRO && $USE_ROS_DISTRO != $INPUT_ROS_DISTRO && -f "$ROS2_WS_MOUNT/install.repos"  ]]; then
+                echo "A rosinstall file has been detected in your workspace using ROS2 $USE_ROS_DISTRO."
+                echo "Building your workspace using ROS2 $INPUT_ROS_DISTRO might cause compatibility issues."
+                echo "Do you want to continue?"
+                echo -n "Yes [y] or No [n]: " 
+                read reply
+                if [[ "$reply" == "n" || "$reply" == "N" ]]; then
+                    echo "Exiting now!"
+                    exit 1
+                fi
+            fi
+
+            USE_ROS_DISTRO=$INPUT_ROS_DISTRO
+        else
+            echo "Error: Option --rosdistro requires an argument"
+            usage
+            exit 1
+        fi
+        ;;
+
+    --skip-import)
+        SKIP_IMPORT=true
+        ;;
+
+    --no-cache)
+        NO_CACHE="--no-cache"
+        ;;
+
+    --del-build-dir)
+        DEL_BUILD_DIR=true
+        ;;
+
+    -h | --help)
+        usage
+        ;;
+
+    -*)
+        echo "Error: Unknown option: $1"
         exit 1
-    fi
+        ;;
+    esac
+    shift
+done
+
+if [[ -z $INPUT_ROS_DISTRO && -z $USE_ROS_DISTRO ]]; then
+    echo "USE_ROS_DISTRO variable is unset in .env file and no ROS2 distro provided. Exiting now!"
+    echo "usage: daisy-build --rosdistro [foxy, galactic, humble, iron]"
+    exit 1
 fi
 
-NO_SRC=false
-if [ ! -d "$ROS2_WS_MOUNT/src" ]; then
-    mkdir $ROS2_WS_MOUNT/src
-    NO_SRC=true
-fi
+echo "Building ROS2 ${USE_ROS_DISTRO^} Docker image for $ROS2_WS_MOUNT."
 
-if [[ -f "$ROS2_WS_MOUNT/install.repos" && "$NO_SRC" == "true" ]]; then
+if [[ -f "$ROS2_WS_MOUNT/install.repos" && "${SKIP_IMPORT^^}" == "FALSE" ]]; then
     if [ ! -x "$(command -v vcs)" ]; then
         echo "Installing VCS Tool for exporting dependencies."
         curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
@@ -89,38 +123,26 @@ if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
    exit 1
 fi
 
-if [ ! -z "$1"  ]; then
-    echo "Updating .env to $1"
-    sed -i "/USE_ROS_DISTRO/ s/.*/USE_ROS_DISTRO=$1/" $DAISY_PATH/.env
+if [ ! -z "$INPUT_ROS_DISTRO"  ]; then
+    echo "Updating .env to $INPUT_ROS_DISTRO"
+    sed -i "/USE_ROS_DISTRO/ s/.*/USE_ROS_DISTRO=$INPUT_ROS_DISTRO/" $DAISY_PATH/.env
     . $DAISY_PATH/.env
 fi
 
 cd $DAISY_PATH
 . setup.bash
-echo "Stopping all running containers."
-docker compose down
-docker compose build
-
-echo ""
-echo "Done building the Docker image."
-echo ""
+docker compose build $NO_CACHE
 
 if [ ! -f $ROS2_WS_MOUNT/.last_build_errors ]; then
     touch $ROS2_WS_MOUNT/.last_build_errors
 fi
 
-echo "Do you want to delete log build and install directories of your workspace?"
-echo -n "Yes [y] or No [n]: " 
-read reply
-if [[ "$reply" == "n" || "$reply" == "N" ]]; then
-    echo ""
-    echo $(ls $ROS2_WS_MOUNT)
-    exit 1
+if [[ "${DEL_BUILD_DIR^^}" == "TRUE" ]]; then
+    sudo rm -rf $ROS2_WS_MOUNT/build
+    sudo rm -rf $ROS2_WS_MOUNT/install
+    sudo rm -rf $ROS2_WS_MOUNT/log
+    echo "Deleted build install and log"
 fi
 
-sudo rm -rf $ROS2_WS_MOUNT/build
-sudo rm -rf $ROS2_WS_MOUNT/install
-sudo rm -rf $ROS2_WS_MOUNT/log
-
 echo ""
-echo $(ls $ROS2_WS_MOUNT)
+echo "Build done!"
