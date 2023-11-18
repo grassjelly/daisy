@@ -40,9 +40,9 @@ if [[ $TOTAL_PANE == ?(-)+([0-9]) ]]; then
   on_project_start: 
     - #do some stuff here
   pre_window: 
-    - source $DAISY_PATH/setup.bash && clear
+    - source /$DAISY_PATH/setup.bash && clear
   on_project_exit: 
-    - cd $DAISY_PATH && docker compose down
+    - cd /$DAISY_PATH && docker compose down
   tmux_options: -f .tmux.conf
   windows:
     - main:
