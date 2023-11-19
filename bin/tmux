@@ -1,59 +1,96 @@
 #!/usr/bin/env bash
 set -e
 
+TMUX_CONFIG_DIR=$HOME/.config/tmuxinator/daisy
+install_tmuxinator() {
+  sudo apt update
+  sudo apt install -y tmuxinator xsel
+  mkdir -p $TMUX_CONFIG_DIR
+  git clone https://github.com/tmux-plugins/tmux-yank $TMUX_CONFIG_DIR/tmux-yank
+  cat << EOF > $TMUX_CONFIG_DIR/.tmux.conf
+set -g mouse on
+set -g default-terminal "screen-256color"
+# pane border
+set -g pane-border-style fg='#6272a4'
+set -g pane-active-border-style fg='#ff79c6'
+# message text
+set -g message-style bg='#44475a',fg='#8be9fd'
+set -g status-style bg='#44475a',fg='#bd93f9'
+# status right
+set-option -g status on
+set -g status-interval 1
+set -g status-fg white
+set-option -g status-left-length 250
+
+set-option -g status-right-length 250
+set -g status-right '#(uptime)'
+set -g status-left "#(vmstat -SM 1 2 | awk 'END {print \"CPU:\"100-\$15\"%\"}')#(free -h | awk '/Mem:/ {print \" MEM:\"\$3}')#(echo \" \")"
+set -g @plugin 'tmux-plugins/tmux-yank'
+#set -g @yank_action 'copy-pipe'
+set -g @yank_selection_mouse 'clipboard'
+run-shell $TMUX_CONFIG_DIR/tmux-yank/yank.tmux
+EOF
+}
+
+write_profile() {
+  cat << EOF > $PROFILE_PATH
+name: $ROS2_WS_CONTAINER_NAME
+on_project_start: 
+  - #do some stuff here
+pre_window: 
+  - source \$DAISY_PATH/setup.bash && clear
+on_project_exit: 
+  - cd \$DAISY_PATH && docker compose down
+tmux_options: -f $HOME/.config/tmuxinator/daisy/.tmux.conf
+windows:
+  - main:
+      panes:
+EOF
+}
+
 MAX_PANE=20
 
 cd $DAISY_PATH
 . setup.bash
 
-if [[ $1 == "-1" ]]; then
-  tmux kill-session -t daisy_$ROS2_WS_CONTAINER_NAME
-  exit 0
+if [ ! -x "$(command -v tmuxinator)" ]; then
+  echo "Installing tmuxinator"
+  install_tmuxinator
 fi
 
 if [ "$TMUX" ]; then
-  echo "Session already attached. Exiting."
-  exit 0
+  if [[ $1 == "-1" ]]; then
+    tmux kill-session -t $(tmux display-message -p '#S')
+    exit 0
+  elif [[ $1 != "-1" ]]; then
+    if [[ -d "$1" ]]; then
+      PROFILE_PATH="${1%/}/template.yaml"
+      echo $PROFILE_PATH
+      write_profile
+      echo "Template saved in $PROFILE_PATH"
+      exit 0
+    fi
+  else
+    echo "Session already attached."
+  fi
 fi
 
 if [ -z $1 ]; then
   TOTAL_PANE=4
+elif [[ $TOTAL_PANE -gt $MAX_PANE ]]; then
+  TOTAL_PANE=$MAX_PANE
 else
   TOTAL_PANE=$1
 fi
 
-if [ ! -x "$(command -v tmuxinator)" ]; then
-  echo "Installing tmuxinator"
-  sudo apt update
-  sudo apt install -y tmuxinator
-fi
-
 if [[ $TOTAL_PANE == ?(-)+([0-9]) ]]; then
-  if [ $TOTAL_PANE -gt $MAX_PANE ]; then
-    NEW_PANES=$MAX_PANE
-  else
-    NEW_PANES=$TOTAL_PANE
-  fi
+  PROFILE_PATH=$TMUX_CONFIG_DIR/$ROS2_WS_CONTAINER_NAME.yaml
+  write_profile
 
-  cat << EOF > $DAISY_PATH/.tmux.yaml
-  name: daisy_$ROS2_WS_CONTAINER_NAME
-  on_project_start: 
-    - #do some stuff here
-  pre_window: 
-    - source \$DAISY_PATH/setup.bash && clear
-  on_project_exit: 
-    - cd \$DAISY_PATH && docker compose down
-  tmux_options: -f .tmux.conf
-  windows:
-    - main:
-        panes:
-EOF
-
-  for ((n=0;n<$NEW_PANES;n++))
-    do echo "        -" >> $DAISY_PATH/.tmux.yaml
+  for ((n=0;n<$TOTAL_PANE;n++))
+    do echo "        -" >> $PROFILE_PATH
   done
-  tmuxinator start -p .tmux.yaml
-
+  tmuxinator start $ROS2_WS_CONTAINER_NAME
 else
   TMUX_FILE="$1.yaml"
   if [ -f $TMUX_FILE ]; then
