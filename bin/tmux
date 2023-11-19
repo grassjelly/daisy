@@ -41,7 +41,7 @@ pre_window:
   - source \$DAISY_PATH/setup.bash && clear
 on_project_exit: 
   - cd \$DAISY_PATH && docker compose down
-tmux_options: -f $HOME/.config/tmuxinator/daisy/.tmux.conf
+tmux_options: -f \$HOME/.config/tmuxinator/daisy/.tmux.conf
 windows:
   - main:
       panes:
