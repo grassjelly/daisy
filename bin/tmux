@@ -6,6 +6,7 @@ install_tmuxinator() {
   sudo apt update
   sudo apt install -y tmuxinator xsel
   mkdir -p $TMUX_CONFIG_DIR
+  rm -rf $TMUX_CONFIG_DIR/tmux-yank
   git clone https://github.com/tmux-plugins/tmux-yank $TMUX_CONFIG_DIR/tmux-yank
   cat << EOF > $TMUX_CONFIG_DIR/.tmux.conf
 set -g mouse on
