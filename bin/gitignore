@@ -3,14 +3,14 @@
 set -e
 
 write_to_ignore(){
-if ! grep -qF "$IGNORE" "$ROS2_WS_MOUNT/.gitignore" ; then
+  if ! grep -qF "$IGNORE" "$ROS2_WS_MOUNT/.gitignore" ; then
     echo "$IGNORE" >> $ROS2_WS_MOUNT/.gitignore
   fi
 }
 
 IGNORE_ITEMS=("/build" "/log" "/install" ".last_build_errors")
 for IGNORE in "${IGNORE_ITEMS[@]}"; do
-    write_to_ignore
+  write_to_ignore
 done
 
 rm -rf $DAISY_PATH/.git
