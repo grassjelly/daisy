@@ -70,8 +70,12 @@ if [ "$TMUX" ]; then
       echo "Template saved in $PROFILE_PATH"
       exit 0
     fi
+    echo "To exit, run:"
+    echo "$ daisy-tmux -1"
+    exit 1
   else
     echo "Session already attached."
+    exit 1
   fi
 fi
 
