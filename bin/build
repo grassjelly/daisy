@@ -115,6 +115,7 @@ if [[ -f "$ROS2_WS_MOUNT/install.repos" && "${SKIP_IMPORT^^}" == "FALSE" ]]; the
     echo ""
     echo "in $ROS2_WS_MOUNT/src"
     echo ""
+    mkdir -p $ROS2_WS_MOUNT/src
     vcs import $ROS2_WS_MOUNT/src --skip-existing --input $ROS2_WS_MOUNT/install.repos --recursive --workers 1
 fi
 
