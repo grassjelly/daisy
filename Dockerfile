@@ -130,7 +130,8 @@ RUN apt-get update \
 RUN rm -rf ${ROS2_WS}/src/*
 RUN mkdir -p ${HOME}/maps
 RUN chown -R ${U_ID}:${G_ID} ${HOME}
-USER ${HOME}
+ARG USERNAME=daisy
+USER ${USERNAME}
 
 FROM workspace as base
 ## ADD custom install here
