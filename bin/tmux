@@ -97,9 +97,9 @@ if [[ $TOTAL_PANE == ?(-)+([0-9]) ]]; then
   done
   tmuxinator start $ROS2_WS_CONTAINER_NAME
 else
-  TMUX_FILE="$1.yaml"
+  TMUX_FILE="tmux/$1.yaml"
   if [ -f $TMUX_FILE ]; then
-    tmuxinator start -p "$1.yaml"
+    tmuxinator start -p "$TMUX_FILE"
   else
     echo "No $TMUX_FILE found"
   fi
