@@ -65,6 +65,7 @@ FROM ros2${RUNTIME} as workspace
 SHELL ["/bin/bash", "-c"]
 
 # Add a user name for development
+ARG PRELOAD_PATH=src
 ARG ROS2_WS_CONTAINER_NAME=
 ARG USERNAME=daisy
 ARG U_ID=${U_ID}
@@ -115,23 +116,23 @@ RUN if [ "${ROS_DISTRO}" == "humble" ]; then \
     fi
 
 # Copy the source files so we could find its dependencies 
-RUN mkdir -p ${ROS2_WS}/src
-COPY src ${ROS2_WS}/src
+RUN mkdir -p /tmp/.preload
+COPY ${PRELOAD_PATH} /tmp/.preload
 
 # Install dependencies  of the packages found in src
-WORKDIR ${ROS2_WS}
 RUN apt-get update \
         && rosdep update --rosdistro=${ROS_DISTRO} \
-        && rosdep install --rosdistro=${ROS_DISTRO} --from-paths src -iry --os=ubuntu:$(lsb_release --codename | cut -f2) \
+        && rosdep install --rosdistro=${ROS_DISTRO} --from-paths /tmp/.preload -iry --os=ubuntu:$(lsb_release --codename | cut -f2) \
     && rm -rf /var/lib/apt/lists/*
 
 # We're only pre-installing the dependencies and not building within the container
 # Let users build it
-RUN rm -rf ${ROS2_WS}/src/*
+RUN rm -rf /tmp/.preload
 RUN mkdir -p ${HOME}/maps
 RUN chown -R ${U_ID}:${G_ID} ${HOME}
 ARG USERNAME=daisy
 USER ${USERNAME}
+WORKDIR ${ROS2_WS}
 
 FROM workspace as base
 ## ADD custom install here

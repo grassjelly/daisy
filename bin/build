@@ -120,7 +120,7 @@ if [[ -f "$ROS2_WS_MOUNT/install.repos" && "${SKIP_IMPORT^^}" == "FALSE" ]]; the
 fi
 
 if [[ -z $(ls -A "$ROS2_WS_MOUNT/src") ]]; then
-   echo "$ROS2_WS_MOUNT/src is empty. Download all the repositorie before running daisy-build."
+   echo "$ROS2_WS_MOUNT/src is empty. Download all the repositories before running daisy-build."
    exit 1
 fi
 
@@ -130,9 +130,35 @@ if [ ! -z "$INPUT_ROS_DISTRO"  ]; then
     . $DAISY_PATH/.env
 fi
 
+PRELOAD_DIRECTORY="$ROS2_WS_MOUNT/.preload"
+rm -rf $PRELOAD_DIRECTORY
+mkdir -p $PRELOAD_DIRECTORY
+
+find "$ROS2_WS_MOUNT/src" -name "package.xml" -type f -print0 |
+while IFS= read -r -d '' PACKAGE_XML; do
+    # Extract the directory path of each package.xml
+    PACKAGE_DIRECTORY="$(dirname "$PACKAGE_XML")"
+
+    # Check if COLCON_IGNORE file exists in the same directory
+    IGNORE_FILE="$PACKAGE_DIRECTORY/COLCON_IGNORE"
+    if [ -e "$IGNORE_FILE" ]; then
+        echo "Skipping $PACKAGE_XML due to COLCON_IGNORE."
+        continue
+    fi
+
+    # Create a subdirectory in the preload directory
+    SUBDIRECTORY="$PRELOAD_DIRECTORY/$(basename "$PACKAGE_DIRECTORY")"
+    mkdir -p "$SUBDIRECTORY"
+    
+    # Copy the package.xml to the subdirectory
+    cp "$PACKAGE_XML" "$SUBDIRECTORY"
+done
+
 cd $DAISY_PATH
 . setup.bash
+export PRELOAD_PATH=.preload
 docker compose build $NO_CACHE
+rm -rf $PRELOAD_DIRECTORY
 
 if [ ! -f $ROS2_WS_MOUNT/.last_build_errors ]; then
     touch $ROS2_WS_MOUNT/.last_build_errors

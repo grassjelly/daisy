@@ -8,7 +8,7 @@ write_to_ignore(){
   fi
 }
 
-IGNORE_ITEMS=("/build" "/log" "/install" ".last_build_errors")
+IGNORE_ITEMS=("/build" "/log" "/install" ".last_build_errors" ".preload")
 for IGNORE in "${IGNORE_ITEMS[@]}"; do
   write_to_ignore
 done

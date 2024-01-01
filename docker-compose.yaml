@@ -12,6 +12,7 @@ services:
         - ROS2_WS_CONTAINER_NAME=${ROS2_WS_CONTAINER_NAME}
         - U_ID=${U_ID}
         - USERNAME=${USERNAME:-daisy}
+        - PRELOAD_PATH=${PRELOAD_PATH:-src}
       target: base
 
   dev:
