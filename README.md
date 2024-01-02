@@ -8,7 +8,7 @@ Daisy aims to make ROS2 development workspaces become more reproducible without 
 
 If you want to quickly test a ROS2 package without system installing ROS2, or simply want to test whether your package builds on another distro, this tool is for you.
 
-A huge thanks to Sebastian Castro for this [blog post](https://roboticseabass.com/2023/07/09/updated-guide-docker-and-ros2/) which was used as a main reference in building this tool.
+A huge thanks to Sebastian Castro for this [blog post](https://roboticseabass.com/2023/07/09/updated-guide-docker-and-ros2/) and [Allison Thackston's Docker files](https://github.com/athackst/dockerfiles) which was used as a main reference in building this tool.
 
 | COMMAND           | ARGUMENTS                    | DESCRIPTION                                             |
 |-------------------|------------------------------|---------------------------------------------------------|
