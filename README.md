@@ -53,7 +53,7 @@ daisy-build <distro>
 
 `daisy-build` will automatically find the dependencies of all the the ROS2 packages inside `src` directory of your workspace. **Take note that running this will stop all daisy spawned containers.**
 
-You'll only need to run this command once or when you have made changes on on the dependencies (package.xml). You can modify the Dockerfile as you wish to add custom installation commands just remember to run `daisy-build` again when you're done.
+You'll only need to run this command once or when you have made changes on on the dependencies (package.xml). You can modify the Dockerfile as you wish to add custom installation commands just remember to run `daisy-build` again when you're done. You can use the --skip-import flag to skip VCS import on re-builds.
 
 Take note that this does not build your ROS2 workspace. You'll have to build it explicitly by running:
 ```
@@ -143,3 +143,20 @@ On one of the panes, run:
 ```
 daisy-tmux -1
 ```
+
+### 2. Miscellaneous
+
+#### 2.1 VNC Server and Web Client
+
+There's a built-in KasmVNC server and Web Based client available in the daisy/daisy-compose.yaml. Simply run:
+
+```
+daisy-compose up kasmvnc
+```
+
+On services that need a screen, `export DISPLAY:=200` to pipe the display to the VNC server.
+```
+export DISPLAY:=200; daisy-compose up rviz
+```
+
+Now, you can view your applications in http://localhost:3000. This has also been tested on a remote setup on a GCP instance with [Tailscale](https://tailscale.com) for secured remote access. The Docker image has been configured to use [VirtualGL](https://virtualgl.org) for 3D acceleration (Nvidia GPUs) while using the VNC server for screen display.
