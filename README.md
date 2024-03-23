@@ -18,6 +18,7 @@ A huge thanks to Sebastian Castro for this [blog post](https://roboticseabass.co
 | `daisy-gitignore` |                              | Add _build_ _install_ _log_ to .gitignore of workspace. |
 | `daisy-template`  |src/my_package                | Add docker template to ROS2 package.                    |
 | `daisy-export`    |                              | Record all local repositories found in src.             |
+| `daisy-tmux`      |<tmux_profile>                | Record all local repositories found in src.             |
 
 ### 1. Installation
 
@@ -117,3 +118,22 @@ docker compose up test
 ```
 
 You can check out this comprehensive [tutorial](https://roboticseabass.com/2023/07/09/updated-guide-docker-and-ros2/) to learn more about ROS2-Docker workflows.
+
+#### 3.4 Running multiple screens and services.
+
+`daisy-tmux` is wrapper for [Tmuxinator](https://github.com/tmuxinator/tmuxinator) to spawn multiple screens and services.
+
+Open multiple screens:
+
+```
+daisy-tmux <number_of_screens>
+```
+
+Using profiles:
+
+Create a profile in daisy/tmux/my_profile.yaml by defining the docker services you want to run per pane. You can use `template.yaml` as a starting point.
+```
+daisy-tmux my_profile
+```
+
+- daisy-tmux has an autocomplete feature that suggests all the created profiles in daisy/tmux by simply pressing tab after `daisy-tmux` command.
