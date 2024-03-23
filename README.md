@@ -98,6 +98,8 @@ Run:
 daisy-export
 ```
 
+This also auto-generates a quickstart guide (README.md) of the workspace.
+
 #### 3.3 Dockerizing ROS2 Packages
 `daisy-template` auto-generates a docker directory that contains all the files to create a Docker image and compose services.
 
