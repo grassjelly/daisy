@@ -8,6 +8,85 @@ if ! grep -qF "$IGNORE" "$ROS2_WS_MOUNT/.gitignore" ; then
   fi
 }
 
+write_readme(){
+    # Specify the README path
+    README_PATH="$ROS2_WS_MOUNT"
+
+# Start of Content
+    START_OF_CONTENT="
+## 1. Installation
+
+### 1.1 Install Docker
+
+\`\`\`bash
+curl https://get.docker.com | sh && sudo systemctl --now enable docker
+\`\`\`
+
+Post Docker Installation:
+
+\`\`\`bash
+sudo usermod -aG docker \$USER && newgrp docker
+\`\`\`
+
+If you're running with an Nvidia GPU, install [Nvidia Runtime](https://github.com/NVIDIA/nvidia-container-runtime#installation) and [reconfigure](https://github.com/NVIDIA/nvidia-container-runtime#daemon-configuration-file) the default runtime.
+
+### 1.2 Build the workspace
+
+#### 1.2.1 Enable Daisy:
+\`\`\`bash
+cd \$HOME/$ROS2_WS_CONTAINER_NAME
+source daisy/setup.bash
+\`\`\`
+
+- Once sourced, you can use Daisy in any directory. You can learn more about Daisy commands [here](https://github.com/grassjelly/daisy).
+
+
+#### 1.2.2 Build the Docker image:
+
+\`\`\`bash
+daisy-build
+\`\`\`
+- Use \`--skip-import\` to skip VCS import on re-builds.
+#### 1.2.3 Build the ROS2 workspace:
+
+\`\`\`bash
+daisy-compose up colcon-build
+\`\`\`
+
+
+## 2. Running docker compose services
+You can run any service available in the \`daisy/docker-compose.yaml\` [file](daisy/docker-compose.yaml):
+\`\`\`bash
+daisy-compose up <my_service>
+\`\`\`
+
+## 3. Running Profiles
+"
+    # Write or append the content to README.md
+    echo "$START_OF_CONTENT" > "$README_PATH/README.md"
+
+    # Loop through yaml files, assuming they're in $DAISY_PATH/tmux
+    file_number=1
+    for yaml_file in "$DAISY_PATH"/tmux/*.yaml; do
+        # echo $(basename $yaml_file .yaml)
+        name_attribute=$(grep 'name:' "$yaml_file" | sed 's/name: //')
+        description_attribute=$(grep 'description:' "$yaml_file" | sed 's/description: //')
+        echo "### 3.$file_number $name_attribute" >> "$README_PATH/README.md"
+        echo "$description_attribute" >> "$README_PATH/README.md"
+        echo "" >> "$README_PATH/README.md"
+        echo "\`\`\`" >> "$README_PATH/README.md"
+        profile="$(basename $yaml_file .yaml)"
+        echo "daisy-tmux $profile" >> "$README_PATH/README.md"
+        echo "\`\`\`" >> "$README_PATH/README.md"
+        ((file_number++))
+    done
+
+    echo "$END_OF_CONTENT" >> "$README_PATH/README.md"
+
+    echo "Content has been written to $README_PATH/README.md"
+}
+
+
 if [[ -z "$(vcs -h)" ]]; then
     echo "Installing VCS Tool for exporting dependencies."
     curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
@@ -38,3 +117,4 @@ cd $DAISY_PATH
 ./bin/gitignore
 IGNORE="/src"
 write_to_ignore
+write_readme
