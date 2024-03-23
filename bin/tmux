@@ -61,7 +61,7 @@ fi
 
 if [ "$TMUX" ]; then
   if [[ $1 == "-1" ]]; then
-    tmux kill-session -t $(tmux display-message -p '#S')
+    tmux kill-session -t "$(tmux display-message -p '#S')"
     exit 0
   elif [[ $1 != "-1" ]]; then
     if [[ -d "$1" ]]; then
