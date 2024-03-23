@@ -123,13 +123,13 @@ You can check out this comprehensive [tutorial](https://roboticseabass.com/2023/
 
 `daisy-tmux` is wrapper for [Tmuxinator](https://github.com/tmuxinator/tmuxinator) to spawn multiple screens and services.
 
-Open multiple screens:
+##### 3.4.1 Open multiple screens
 
 ```
 daisy-tmux <number_of_screens>
 ```
 
-Using profiles:
+##### 3.4.2 Using profiles
 
 Create a profile in daisy/tmux/my_profile.yaml by defining the docker services you want to run per pane. You can use `template.yaml` as a starting point.
 ```
@@ -137,3 +137,9 @@ daisy-tmux my_profile
 ```
 
 - daisy-tmux has an autocomplete feature that suggests all the created profiles in daisy/tmux by simply pressing tab after `daisy-tmux` command.
+
+##### 3.4.3 Exiting
+On one of the panes, run:
+```
+daisy-tmux -1
+```
