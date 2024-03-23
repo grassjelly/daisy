@@ -144,9 +144,9 @@ On one of the panes, run:
 daisy-tmux -1
 ```
 
-### 2. Miscellaneous
+### 3. Miscellaneous
 
-#### 2.1 VNC Server and Web Client
+#### 3.1 VNC Server and Web Client
 
 There's a built-in KasmVNC server and Web Based client available in the daisy/daisy-compose.yaml. Simply run:
 
