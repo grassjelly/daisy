@@ -1,4 +1,5 @@
-name: template
+name: Profile Template
+description: It's good to define what this profile does for the auto-generated quickstart guide.
 on_project_start: export DISPLAY=:200
 on_project_exit: 
 - cd $DAISY_PATH
