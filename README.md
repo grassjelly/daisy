@@ -153,7 +153,7 @@ daisy-tmux -1
 There's a built-in KasmVNC server and Web Based client available in the daisy/daisy-compose.yaml. Simply run:
 
 ```
-daisy-compose up kasmvnc
+daisy-compose up webtop
 ```
 
 On services that need a screen, `export DISPLAY:=200` to pipe the display to the VNC server.
