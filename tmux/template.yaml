@@ -8,7 +8,7 @@ tmux_options: -f $HOME/.config/tmuxinator/daisy/.tmux.conf
 windows:
   - main:
       panes:
-      - daisy-compose up kasmvnc
+      - daisy-compose up webtop
       - # This is not limited to this line only
       - # You can add as much panes as you want.
    
