@@ -171,5 +171,9 @@ if [[ "${DEL_BUILD_DIR^^}" == "TRUE" ]]; then
     echo "Deleted build install and log"
 fi
 
+## CUSTOM INSTALLATION HERE ##
+
+##############################
+
 echo ""
 echo "Build done!"
