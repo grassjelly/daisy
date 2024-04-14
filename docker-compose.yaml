@@ -1,4 +1,3 @@
-version: "3.9"
 services:   
   base:
     image: ${ROS2_WS_CONTAINER_NAME}-${USE_ROS_DISTRO}
@@ -61,6 +60,20 @@ services:
       - /dev/dri:/dev/dri
     shm_size: "1gb"
     restart: unless-stopped
+
+  kasmvnc:
+    runtime: ${RUNTIME}
+    container_name: kasmvnc
+    image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
+    privileged: true
+    network_mode: host
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority
+    environment:
+      - DISPLAY=:200
+    devices:
+      - /dev/dri:/dev/dri
 
   rviz:
     container_name: rviz
