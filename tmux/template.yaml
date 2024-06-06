@@ -1,9 +1,14 @@
 name: Profile Template
 description: It's good to define what this profile does for the auto-generated quickstart guide.
-on_project_start: export DISPLAY=:200
+pre_window: source $DAISY_PATH/setup.bash
+
+on_project_start: 
+- export DISPLAY=:200
+
 on_project_exit: 
 - cd $DAISY_PATH
 - docker compose down
+
 tmux_options: -f $HOME/.config/tmuxinator/daisy/.tmux.conf
 windows:
   - main:
