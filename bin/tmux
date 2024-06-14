@@ -80,7 +80,7 @@ if [ "$TMUX" ]; then
   fi
 fi
 
-if [ $1 == "-1" ]; then
+if [[ $1 == "-1" ]]; then
   echo "There's no session to kill!"
   exit 0
 elif [ -z $1 ]; then
