@@ -4,6 +4,7 @@ pre_window: source $DAISY_PATH/setup.bash
 
 on_project_start: 
 - export DISPLAY=:200
+- docker compose up -d debug #allows spawning multiple daisy-shell in the main/panes
 
 on_project_exit: 
 - cd $DAISY_PATH
