@@ -28,7 +28,6 @@ services:
       - DISPLAY=${DISPLAY:-}
       - QT_X11_NO_MITSHM=1
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
-      - OLLAMA_MODELS=/ollama
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -36,7 +35,6 @@ services:
       - $HOME/.Xauthority:/home/${USERNAME}/.Xauthority
       - $ROS2_WS_MOUNT:/home/${USERNAME}/$ROS2_WS_CONTAINER_NAME
       - /tmp:/tmp
-      - ~/ollama:/ollama
     devices:
       - /dev:/dev
 
