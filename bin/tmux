@@ -2,9 +2,8 @@
 set -e
 
 TMUX_CONFIG_DIR=$HOME/.config/tmuxinator/daisy
-install_tmuxinator() {
-  sudo apt update
-  sudo apt install -y tmuxinator xsel
+
+write_tmux_conf() {
   mkdir -p $TMUX_CONFIG_DIR
   rm -rf $TMUX_CONFIG_DIR/tmux-yank
   git clone https://github.com/tmux-plugins/tmux-yank $TMUX_CONFIG_DIR/tmux-yank
@@ -33,15 +32,25 @@ run-shell $TMUX_CONFIG_DIR/tmux-yank/yank.tmux
 EOF
 }
 
+install_tmuxinator() {
+  sudo apt update
+  sudo apt install -y tmuxinator xsel
+  write_tmux_conf
+}
+
 write_profile() {
+  if [ ! -d $TMUX_CONFIG_DIR ]; then
+    write_tmux_conf
+  fi
+
   cat << EOF > $PROFILE_PATH
 name: $ROS2_WS_CONTAINER_NAME
 on_project_start: 
-  - #do some stuff here
+   - #do some stuff here
 pre_window: 
-  - source \$DAISY_PATH/setup.bash && clear
+   - source \$DAISY_PATH/setup.bash && clear
 on_project_exit: 
-  - cd \$DAISY_PATH && docker compose down
+   - cd \$DAISY_PATH && docker compose down
 tmux_options: -f \$HOME/.config/tmuxinator/daisy/.tmux.conf
 windows:
   - main:
