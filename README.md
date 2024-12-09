@@ -30,7 +30,7 @@ Post Docker Installation:
 ```
 sudo usermod -aG docker $USER && newgrp docker
 ```
-If you're running with a Nvidia GPU, install [Nvidia Runtime](https://github.com/NVIDIA/nvidia-container-runtime#installation) and [reconfigure](https://github.com/NVIDIA/nvidia-container-runtime#daemon-configuration-file) the deafult runtime.
+If you're running with a Nvidia GPU, install [Nvidia Runtime](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-apt) and [reconfigure](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/1.12.1/user-guide.html#daemon-configuration-file) the deafult runtime.
 
 #### 1.2 Download daisy
 Clone daisy into your ROS2 workspace (eg. $HOME/my_ros2_ws):
