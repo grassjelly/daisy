@@ -1,8 +1,29 @@
 ARG USE_ROS_DISTRO=
 ARG UBUNTU_VER=
-ARG RUNTIME=
+ARG BASE_IMAGE=
+ARG CUSTOM_BASE=
 
-FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base as ros2
+FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base as ros2default
+
+FROM ${CUSTOM_BASE} as ros2custom
+SHELL ["/bin/bash", "-c"]
+ARG USE_ROS_DISTRO=
+RUN add-apt-repository universe \
+        && curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null \
+        && apt-get update && apt-get install -y --no-install-recommends \
+            ros-${USE_ROS_DISTRO}-ros-base \
+            python3-argcomplete \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ros-dev-tools \
+        ros-${USE_ROS_DISTRO}-ament-* \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash
+RUN rosdep init 
+ENV ROS_DISTRO=${USE_ROS_DISTRO}
 
 FROM nvidia/cuda:12.1.0-runtime-ubuntu${UBUNTU_VER} as ros2nvidia
 SHELL ["/bin/bash", "-c"]
@@ -78,7 +99,7 @@ ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute
 ENV QT_X11_NO_MITSHM=1
 
-FROM ros2${RUNTIME} as workspace
+FROM ros2${BASE_IMAGE} as workspace
 SHELL ["/bin/bash", "-c"]
 
 # Add a user name for development
@@ -118,8 +139,8 @@ COPY daisy/entrypoint.sh /
 RUN sed -i "s/rosdistro/${ROS_DISTRO}/g" /entrypoint.sh
 RUN sed -i "s/workspace/${ROS2_WS_CONTAINER_NAME}/g" /entrypoint.sh
 RUN sed -i "s/username/${USERNAME}/g" /entrypoint.sh
-ARG RUNTIME=
-RUN if [ ${RUNTIME} == "nvidia" ]; then \
+ARG BASE_IMAGE=
+RUN if [ ${BASE_IMAGE} == "nvidia" ]; then \
         sed -i 's/\$\@/vglrun +v -d \/dev\/dri\/card0 \$@/' /entrypoint.sh; \
     fi
 RUN chmod +x /entrypoint.sh
