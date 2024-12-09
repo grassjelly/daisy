@@ -5,9 +5,10 @@ services:
       context: ../
       dockerfile: daisy/Dockerfile
       args:
-        - RUNTIME=${RUNTIME}
+        - BASE_IMAGE=${BASE_IMAGE}
         - UBUNTU_VER=${UBUNTU_VER}
         - USE_ROS_DISTRO=${USE_ROS_DISTRO}
+        - CUSTOM_BASE=${CUSTOM_BASE}
         - ROS2_WS_CONTAINER_NAME=${ROS2_WS_CONTAINER_NAME}
         - U_ID=${U_ID}
         - USERNAME=${USERNAME:-daisy}
@@ -15,7 +16,6 @@ services:
       target: base
 
   dev:
-    runtime: ${RUNTIME}
     image: ${ROS2_WS_CONTAINER_NAME}-${USE_ROS_DISTRO}
     stdin_open: true
     tty: true
@@ -28,6 +28,7 @@ services:
       - DISPLAY=${DISPLAY:-}
       - QT_X11_NO_MITSHM=1
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
+      - OLLAMA_MODELS=/ollama
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -35,6 +36,7 @@ services:
       - $HOME/.Xauthority:/home/${USERNAME}/.Xauthority
       - $ROS2_WS_MOUNT:/home/${USERNAME}/$ROS2_WS_CONTAINER_NAME
       - /tmp:/tmp
+      - ~/ollama:/ollama
     devices:
       - /dev:/dev
 
@@ -62,7 +64,6 @@ services:
     restart: unless-stopped
 
   kasmvnc:
-    runtime: ${RUNTIME}
     container_name: kasmvnc
     image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
     privileged: true
