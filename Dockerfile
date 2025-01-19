@@ -3,9 +3,9 @@ ARG UBUNTU_VER=
 ARG BASE_IMAGE=
 ARG CUSTOM_BASE=
 
-FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base as ros2default
+FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base AS ros2default
 
-FROM ${CUSTOM_BASE} as ros2custom
+FROM ${CUSTOM_BASE} AS ros2custom
 SHELL ["/bin/bash", "-c"]
 ARG USE_ROS_DISTRO=
 RUN add-apt-repository universe \
@@ -25,7 +25,7 @@ RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash
 RUN rosdep init 
 ENV ROS_DISTRO=${USE_ROS_DISTRO}
 
-FROM nvidia/cuda:12.1.0-runtime-ubuntu${UBUNTU_VER} as ros2nvidia
+FROM nvidia/cuda:12.1.0-runtime-ubuntu${UBUNTU_VER} AS ros2nvidia
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -99,7 +99,7 @@ ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute
 ENV QT_X11_NO_MITSHM=1
 
-FROM ros2${BASE_IMAGE} as workspace
+FROM ros2${BASE_IMAGE} AS workspace
 SHELL ["/bin/bash", "-c"]
 
 # Add a user name for development
@@ -172,7 +172,7 @@ ARG USERNAME=daisy
 USER ${USERNAME}
 WORKDIR ${ROS2_WS}
 
-FROM workspace as base
+FROM workspace AS base
 ## ADD custom install here
 
 ENTRYPOINT ["/entrypoint.sh"]
