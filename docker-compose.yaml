@@ -81,7 +81,7 @@ services:
     command: rviz2
 
   debug:
-    container_name: debug
+    container_name: ${ROS2_WS_CONTAINER_NAME}_debug
     extends: dev
     command: sleep infinity
 
