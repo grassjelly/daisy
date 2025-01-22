@@ -1,3 +1,4 @@
+name: ${ROS2_WS_CONTAINER_NAME}
 services:   
   base:
     image: ${ROS2_WS_CONTAINER_NAME}-${USE_ROS_DISTRO}
