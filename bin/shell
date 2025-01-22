@@ -11,7 +11,7 @@ if [[ -z $REMOTE_DISPLAY && ! -z $DISPLAY && "$DISPLAY" != ":200" ]]; then
 fi
 
 if [ -z $(docker compose ps -q debug) ]; then
-    docker compose up debug -d --force-recreate
+    docker compose -p ${ROS2_WS_CONTAINER_NAME} up debug -d --force-recreate
 fi
 
 if [[ ! -z "$@" ]]; then
@@ -20,8 +20,8 @@ if [[ ! -z "$@" ]]; then
     else
         COMMAND="source /opt/ros/$USE_ROS_DISTRO/setup.bash ; $@"
     fi
-    docker compose exec debug /bin/bash -c "$COMMAND"
+    docker compose -p ${ROS2_WS_CONTAINER_NAME} exec debug /bin/bash -ic "$COMMAND"
 
 else
-    docker compose exec debug /bin/bash
+    docker compose -p ${ROS2_WS_CONTAINER_NAME} exec debug /bin/bash
 fi
