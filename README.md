@@ -45,7 +45,15 @@ source daisy/setup.bash
 ```
 - Once sourced, you can use daisy in any directory.
 
-#### 1.3 Build the Docker image:
+#### 1.3 Configure the .env file:
+
+- **BASE_IMAGE** - set to `default` for barebones, `nvidia` for Nvidia based image, and `custom` if you're using a custom base image on CUSTOM_BASE.
+- **ROS_DOMAIN_ID** - ROS2 Domain ID. Defaults is `0`.
+- **USE_ROS_DISTRO** - ROS2 Distro to be used. Defaults is `humble`.
+- **USERNAME** - Ubuntu username. Defaults is `daisy`.
+- **CUSTOM_BASE** - Custom base Docker image to be used for eg. `nvcr.io/nvidia/tritonserver:24.08-py3`. Set to `null` if unused.
+
+#### 1.4 Build the Docker image:
 ```
 daisy-build <distro>
 ```
