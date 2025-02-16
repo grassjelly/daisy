@@ -25,7 +25,7 @@ RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash
 RUN rosdep init 
 ENV ROS_DISTRO=${USE_ROS_DISTRO}
 
-FROM nvidia/cuda:12.1.0-runtime-ubuntu${UBUNTU_VER} AS ros2nvidia
+FROM nvidia/cuda:12.8.0-runtime-ubuntu${UBUNTU_VER} AS ros2nvidia
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -56,7 +56,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         sudo \
         software-properties-common \
         wget \
-        libegl1-mesa \
+        libegl1 \
         libglu1-mesa \ 
         libxv1 \
         libxtst6 \
@@ -64,7 +64,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install VirtualGL
 ARG VIRTUALGL_VER="3.1"
-RUN wget -O /tmp/virtualgl.deb https://zenlayer.dl.sourceforge.net/project/virtualgl/${VIRTUALGL_VER}/virtualgl_${VIRTUALGL_VER}_amd64.deb
+RUN wget -O /tmp/virtualgl.deb https://github.com/VirtualGL/virtualgl/releases/download/${VIRTUALGL_VER}/virtualgl_${VIRTUALGL_VER}_amd64.deb
 RUN dpkg -i /tmp/virtualgl.deb 
 
 # Install glvnd
@@ -156,6 +156,10 @@ RUN if [ "${ROS_DISTRO}" == "humble" ]; then \
 # Copy the source files so we could find its dependencies 
 RUN mkdir -p /tmp/.preload
 COPY ${PRELOAD_PATH} /tmp/.preload
+
+# https://discourse.ros.org/t/rosdep-for-pip-is-broken-on-jazzy/38981/11
+# allow installing pip packages using ROSDEP
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
 # Install dependencies  of the packages found in src
 RUN apt-get update \
