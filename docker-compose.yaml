@@ -40,38 +40,20 @@ services:
       - /dev:/dev
 
   webtop:
-    image: lscr.io/linuxserver/webtop:latest
     container_name: webtop
-    security_opt:
-      - seccomp:unconfined
+    image: lscr.io/linuxserver/webtop:latest
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - SUBFOLDER=/
-      - TITLE=Webtop
       - DISPLAY=:200
     network_mode: host
-    volumes:
-      - /path/to/data:/config
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $HOME/.Xauthority:/root/.Xauthority
     devices:
-      - /dev/dri:/dev/dri
-    shm_size: "1gb"
-    restart: unless-stopped
+      - /dev/dri:/dev/dri 
 
   kasmvnc:
     container_name: kasmvnc
     image: lsiobase/kasmvnc:alpine321
-    privileged: true
-    network_mode: host
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $HOME/.Xauthority:/root/.Xauthority
     environment:
       - DISPLAY=:200
+    network_mode: host
     devices:
       - /dev/dri:/dev/dri
 
