@@ -64,7 +64,7 @@ services:
 
   kasmvnc:
     container_name: kasmvnc
-    image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
+    image: lsiobase/kasmvnc:alpine321
     privileged: true
     network_mode: host
     volumes:
