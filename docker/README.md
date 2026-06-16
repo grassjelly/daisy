@@ -73,6 +73,48 @@ From the project root, use `csh` to run commands inside the `dev` container (it 
 ./csh ros2 topic list
 ```
 
+## Profiles
+
+Docker Compose profiles let you group optional services so they only start when explicitly requested. This keeps the default `./csh` workflow lean — only the `dev` container runs — while still making it easy to bring up extras like a VNC server, a simulation environment, or a GPU debugger on demand.
+
+**Adding a profile to a service**
+
+Open `docker/docker-compose.yaml` and add a `profiles` key to any service you want to make optional:
+
+```yaml
+services:
+  kasmvnc:
+    container_name: kasmvnc
+    image: lsiobase/kasmvnc:alpine321
+    profiles: [gui]          # only starts when the "gui" profile is active
+    network_mode: host
+    ...
+```
+
+A service without a `profiles` key is always started (the default behaviour); a service with one is skipped unless its profile is activated.
+
+**Starting services in a profile**
+
+```bash
+# Start dev + all services tagged "gui"
+cd docker && docker compose --profile gui up -d
+
+# Run a one-shot command with a profile active
+docker compose --profile gui run --rm kasmvnc
+```
+
+You can activate multiple profiles at once:
+
+```bash
+docker compose --profile gui --profile sim up -d
+```
+
+Or set the `COMPOSE_PROFILES` variable in `docker/.env` to make a profile permanent for your local setup:
+
+```bash
+COMPOSE_PROFILES=gui
+```
+
 ## Customization
 
 - Edit `docker/.env` to change the ROS distro, base image variant, domain ID, or GPU.
