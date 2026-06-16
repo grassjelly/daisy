@@ -1,9 +1,0 @@
-#!/bin/bash
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "$SCRIPT_DIR/.env"
-
-if [ -z "$(docker compose -f "$SCRIPT_DIR/docker-compose.yaml" ps -q dev 2>/dev/null)" ]; then
-    HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose -f "$SCRIPT_DIR/docker-compose.yaml" up -d dev
-fi
-
-docker compose -f "$SCRIPT_DIR/docker-compose.yaml" exec dev bash
