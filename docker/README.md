@@ -1,7 +1,3 @@
-# ros2_docker_ws
-
-A minimal template for containerizing ROS2 projects.
-
 ## Prerequisites
 
 ### gazebo-cuda build
