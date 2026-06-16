@@ -2,12 +2,20 @@
 .git
 .gitignore
 
-# Docker tooling (not needed inside the image; entrypoint.sh is the only exception)
+# Host-only files
+CLAUDE.md
+README.md
+csh
+
+# Docker tooling (entrypoint.sh is explicitly COPY'd; everything else excluded)
 docker/Dockerfile
 docker/docker-compose.yaml
-docker/sim.yaml
-docker/demos/
-.docker/
+docker/.env
+docker/build
+docker/dev
+docker/profiles/
+docker/README.md
+docker/scripts/kasm-autostart
 
 # Local colcon build artifacts
 build/
