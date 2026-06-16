@@ -1,3 +1,5 @@
+name: ${PROJECT_NAME}
+
 services:
   build:
     image: ${PROJECT_NAME}:${BASE_IMAGE}
@@ -29,13 +31,21 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/home/ros/.Xauthority
+      - ros2_ws:/home/ros/${WORKSPACE_NAME:-ros2_ws}/
 
   dev:
-    container_name: dev
+    container_name: ${PROJECT_NAME}-dev
     extends: base
     command: sleep infinity
     volumes:
-      - ../:/home/ros/${WORKSPACE_NAME:-ros2_ws}/
+      - ../:/home/ros/${WORKSPACE_NAME:-ros2_ws}/src/
+
+  colcon-build:
+    container_name: ${PROJECT_NAME}-colcon-build
+    extends: base
+    command: colcon build --symlink-install
+    volumes:
+      - ../:/home/ros/${WORKSPACE_NAME:-ros2_ws}/src/
 
   kasmvnc:
     container_name: kasmvnc
@@ -44,4 +54,7 @@ services:
     environment:
     - DISPLAY=:200
     volumes:
-    - ./kasm-autostart:/defaults/autostart
+    - ./scripts/kasm-autostart:/defaults/autostart
+
+volumes:
+  ros2_ws:

@@ -45,7 +45,7 @@ RUN /bin/bash -c " \
     fi"
 
 # Copy and configure entrypoint before leaving root user
-COPY docker/entrypoint.sh /entrypoint.sh
+COPY docker/scripts/entrypoint.sh /entrypoint.sh
 
 # Remap existing user to match host UID/GID and grant sudo privileges
 RUN groupmod --gid ${HOST_GID} ${USERNAME} \

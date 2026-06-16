@@ -1,5 +1,0 @@
-repositories:
-  my_repo:
-    type: git
-    url: https://github.com/my_github/my_repo.git
-    version: branch_name

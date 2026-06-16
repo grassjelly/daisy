@@ -1,4 +1,4 @@
 #!/bin/bash
 
-HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose build
+HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose build "$@" build
 docker pull lsiobase/kasmvnc:alpine321

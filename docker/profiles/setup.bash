@@ -8,5 +8,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     exit 1
 fi
 
-export TMUXINATOR_CONFIG="$(cd "$(dirname "${BASH_SOURCE[0]}")/profiles" && pwd)"
+export TMUXINATOR_CONFIG="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 echo "TMUXINATOR_CONFIG set to: $TMUXINATOR_CONFIG"
+
+alias mux=tmuxinator
