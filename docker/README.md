@@ -73,46 +73,40 @@ From the project root, use `csh` to run commands inside the `dev` container (it 
 ./csh ros2 topic list
 ```
 
-## Profiles
+## Tmuxinator Profiles
 
-Docker Compose profiles let you group optional services so they only start when explicitly requested. This keeps the default `./csh` workflow lean — only the `dev` container runs — while still making it easy to bring up extras like a VNC server, a simulation environment, or a GPU debugger on demand.
+Tmuxinator profiles let you define and launch repeatable tmux session layouts. The `docker/profiles/` directory holds these YAML configs alongside a shared `tmux.conf` and a `setup.bash` helper.
 
-**Adding a profile to a service**
+**Setting up**
 
-Open `docker/docker-compose.yaml` and add a `profiles` key to any service you want to make optional:
+Source `setup.bash` once per shell session to point tmuxinator at the profiles directory and create a `mux` alias:
+
+```bash
+source docker/profiles/setup.bash
+```
+
+Then start a profile by name:
+
+```bash
+mux start dev
+```
+
+**Adding a new profile**
+
+Copy `docker/profiles/dev.yml` to a new file (e.g. `sim.yml`) and set its `name:` field:
 
 ```yaml
-services:
-  kasmvnc:
-    container_name: kasmvnc
-    image: lsiobase/kasmvnc:alpine321
-    profiles: [gui]          # only starts when the "gui" profile is active
-    network_mode: host
-    ...
+name: sim   # must be unique — see warning below
 ```
 
-A service without a `profiles` key is always started (the default behaviour); a service with one is skipped unless its profile is activated.
+**Profile name uniqueness**
 
-**Starting services in a profile**
+Each tmuxinator profile's `name:` field becomes the tmux session name. If two profiles share the same name and are both running at the same time, tmuxinator will attach to the existing session instead of creating a new one, causing them to clash. Keep every profile's `name:` unique.
 
-```bash
-# Start dev + all services tagged "gui"
-cd docker && docker compose --profile gui up -d
-
-# Run a one-shot command with a profile active
-docker compose --profile gui run --rm kasmvnc
-```
-
-You can activate multiple profiles at once:
+**Stopping a profile**
 
 ```bash
-docker compose --profile gui --profile sim up -d
-```
-
-Or set the `COMPOSE_PROFILES` variable in `docker/.env` to make a profile permanent for your local setup:
-
-```bash
-COMPOSE_PROFILES=gui
+mux stop dev
 ```
 
 ## Customization
