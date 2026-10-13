@@ -1,6 +1,6 @@
 ARG DOCKER_ROS_DISTRO=jazzy
 ARG BASE_IMAGE=gazebo-cuda
-FROM althack/ros2:${DOCKER_ROS_DISTRO}-dev AS hardware
+FROM althack/ros2:${DOCKER_ROS_DISTRO}-base AS hardware
 FROM althack/ros2:${DOCKER_ROS_DISTRO}-gazebo AS gazebo
 FROM althack/ros2:${DOCKER_ROS_DISTRO}-cuda-gazebo AS gazebo-cuda
 
@@ -85,6 +85,18 @@ RUN sudo apt-get update && \
 #         <package-2> && \
 #     sudo rm -rf /var/lib/apt/lists/*
 
+# Hardware base image only: install colcon and initialise rosdep
+# (the gazebo / gazebo-cuda images already ship with both)
+RUN if [ "${BASE_IMAGE}" = "hardware" ]; then \
+        sudo apt-get update && \
+        sudo apt-get install -y --no-install-recommends \
+            python3-colcon-common-extensions && \
+        if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then \
+            sudo rosdep init ; \
+        fi && \
+        sudo rm -rf /var/lib/apt/lists/* ; \
+    fi
+
 # Update rosdep and install dependencies
 RUN sudo apt-get update && \
     rosdep update --rosdistro=${DOCKER_ROS_DISTRO} && \
@@ -96,7 +108,7 @@ RUN sudo apt-get update && \
     sudo rm -rf /var/lib/apt/lists/*
 
 # Build the workspace
-RUN /bin/bash -c "source /opt/ros/${DOCKER_ROS_DISTRO}/setup.bash && colcon build"
+RUN source /opt/ros/${DOCKER_ROS_DISTRO}/setup.bash && colcon build
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/bin/bash"] 
+CMD ["/bin/bash"]
